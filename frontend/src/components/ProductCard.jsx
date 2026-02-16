@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { addToWishlist, removeFromWishlist } from "../services/wishlistApi";
+import { addToCart } from "../services/cartApi";
 
 const ProductCard = ({ product }) => {
   const [wishlisted, setWishlisted] = useState(false);
@@ -30,6 +31,15 @@ const ProductCard = ({ product }) => {
 
         <button onClick={handleWishlist}>
           {wishlisted ? "💚" : "🤍"}
+        </button>
+        <button
+          onClick={async (e) => {
+            e.preventDefault();
+            await addToCart(product._id);
+            alert("Added to cart");
+          }}
+        >
+          Add to Cart
         </button>
       </div>
     </Link>
