@@ -4,6 +4,8 @@ import Shop from "./pages/Shop";
 import Product from "./pages/Product";
 import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+
 
 function App() {
   return (
@@ -13,6 +15,7 @@ function App() {
       <Route path="/product/:id" element={<Product />} />
       <Route path="/wishlist" element={<Wishlist />} />
       <Route path="/cart" element={<Cart />} />
+      <Route path="/checkout" element={<Checkout />} />
     </Routes>
   );
 }

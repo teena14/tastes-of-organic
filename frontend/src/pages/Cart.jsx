@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { getCart } from "../services/cartApi";
 import { updateCartQuantity } from "../services/cartApi";
 import { removeFromCart } from "../services/cartApi";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const [items, setItems] = useState([]);
@@ -80,6 +81,10 @@ const Cart = () => {
       <h3>Subtotal: ₹{subtotal}</h3>
       <h3>Delivery: ₹{delivery}</h3>
       <h2>Total: ₹{total}</h2>
+
+      <Link to="/checkout">
+        <button>Proceed to Checkout</button>
+      </Link>
     </div>
   );
 };
