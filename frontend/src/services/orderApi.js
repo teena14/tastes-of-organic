@@ -9,3 +9,8 @@ export const placeOrder = async (shippingAddress) => {
 
   return res.data;
 };
+
+export const getMyOrders = async () => {
+  const res = await api.get(`/orders/user/${getUserId()}`);
+  return res.data.data;
+};
