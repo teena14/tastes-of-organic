@@ -85,4 +85,21 @@ export const getUserOrders = async (req, res) => {
   }
 };
 
+export const getOrderById = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.json({
+      success: true,
+      data: order
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Failed to fetch order" });
+  }
+};
 

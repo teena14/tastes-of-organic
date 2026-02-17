@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { getCart } from "../services/cartApi";
 import { placeOrder } from "../services/orderApi";
 import { getUserProfile } from "../services/userApi";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const [cart, setCart] = useState(null);
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     name: "",
@@ -17,16 +19,14 @@ const Checkout = () => {
   });
 
   useEffect(() => {
-    const loadCart = async () => {
-      const data = await getCart();
-      setCart(data);
-    };
-    loadCart();
-  }, []);
-
-  useEffect(() => {
     const loadData = async () => {
       const cartData = await getCart();
+
+      if (!cartData || cartData.items.length === 0) {
+        navigate("/cart");
+        return;
+      }
+
       setCart(cartData);
 
       const user = await getUserProfile();
@@ -58,9 +58,8 @@ const Checkout = () => {
       return;
     }
 
-    await placeOrder(form);
-    alert("Order placed successfully");
-    window.location.href = "/orders";
+    const result = await placeOrder(form);
+    navigate(`/order-success/${result.order._id}`);
   };
 
   if (!cart) return <p>Loading...</p>;
@@ -76,13 +75,54 @@ const Checkout = () => {
 
       <h3>Shipping Details</h3>
 
-      <input name="name" placeholder="Full Name" onChange={handleChange} />
-      <input name="phone" placeholder="Phone Number" onChange={handleChange} />
-      <input name="addressLine1" placeholder="Address Line 1" onChange={handleChange} />
-      <input name="addressLine2" placeholder="Address Line 2" onChange={handleChange} />
-      <input name="city" placeholder="City" onChange={handleChange} />
-      <input name="state" placeholder="State" onChange={handleChange} />
-      <input name="postalCode" placeholder="Postal Code" onChange={handleChange} />
+      <input
+        name="name"
+        placeholder="Full Name"
+        value={form.name}
+        onChange={handleChange}
+      />
+
+      <input
+        name="phone"
+        placeholder="Phone Number"
+        value={form.phone}
+        onChange={handleChange}
+      />
+
+      <input
+        name="addressLine1"
+        placeholder="Address Line 1"
+        value={form.addressLine1}
+        onChange={handleChange}
+      />
+
+      <input
+        name="addressLine2"
+        placeholder="Address Line 2"
+        value={form.addressLine2}
+        onChange={handleChange}
+      />
+
+      <input
+        name="city"
+        placeholder="City"
+        value={form.city}
+        onChange={handleChange}
+      />
+
+      <input
+        name="state"
+        placeholder="State"
+        value={form.state}
+        onChange={handleChange}
+      />
+
+      <input
+        name="postalCode"
+        placeholder="Postal Code"
+        value={form.postalCode}
+        onChange={handleChange}
+      />
 
       <br /><br />
 

@@ -83,8 +83,14 @@ const Cart = () => {
       <h2>Total: ₹{total}</h2>
 
       <Link to="/checkout">
-        <button>Proceed to Checkout</button>
+        <button disabled={items.length === 0}>
+          Proceed to Checkout
+        </button>
       </Link>
+
+      {items.length === 0 && (
+        <p>Your cart is empty. Add items to proceed to checkout.</p>
+      )}
     </div>
   );
 };

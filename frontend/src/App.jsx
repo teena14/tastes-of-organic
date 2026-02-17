@@ -6,6 +6,7 @@ import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders";
+import OrderSuccess from "./pages/OrderSuccess";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -33,8 +34,10 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route path="/order-success/:orderId" element={<OrderSuccess />} />
 
     </Routes>
+    
   );
 }
 
