@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getCart } from "../services/cartApi";
 import { placeOrder } from "../services/orderApi";
+import { getUserProfile } from "../services/userApi";
 
 const Checkout = () => {
   const [cart, setCart] = useState(null);
@@ -23,6 +24,20 @@ const Checkout = () => {
     loadCart();
   }, []);
 
+  useEffect(() => {
+    const loadData = async () => {
+      const cartData = await getCart();
+      setCart(cartData);
+
+      const user = await getUserProfile();
+      if (user.address) {
+        setForm(user.address);
+      }
+    };
+
+    loadData();
+  }, []);
+
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -31,9 +46,21 @@ const Checkout = () => {
   };
 
   const handleSubmit = async () => {
+    if (
+      !form.name ||
+      !form.phone ||
+      !form.addressLine1 ||
+      !form.city ||
+      !form.state ||
+      !form.postalCode
+    ) {
+      alert("Please fill all required address fields.");
+      return;
+    }
+
     await placeOrder(form);
     alert("Order placed successfully");
-    window.location.href = "/cart";
+    window.location.href = "/orders";
   };
 
   if (!cart) return <p>Loading...</p>;
