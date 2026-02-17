@@ -11,6 +11,20 @@ export const placeOrder = async (req, res) => {
       return res.status(400).json({ message: "Cart is empty" });
     }
 
+    if (
+      !shippingAddress ||
+      !shippingAddress.name ||
+      !shippingAddress.phone ||
+      !shippingAddress.addressLine1 ||
+      !shippingAddress.city ||
+      !shippingAddress.state ||
+      !shippingAddress.postalCode
+    ) {
+      return res.status(400).json({
+        message: "Shipping address is required"
+      });
+    }
+
     let subtotal = 0;
 
     const orderItems = user.cart.map(item => {
@@ -37,6 +51,7 @@ export const placeOrder = async (req, res) => {
       paymentMethod: "online"
     });
 
+    user.address = shippingAddress;
     // clear cart
     user.cart = [];
     await user.save();
@@ -69,3 +84,5 @@ export const getUserOrders = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch orders" });
   }
 };
+
+
