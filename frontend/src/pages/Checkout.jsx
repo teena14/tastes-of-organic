@@ -20,23 +20,27 @@ const Checkout = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const cartData = await getCart();
+      try {
+        const cartData = await getCart();
 
-      if (!cartData || cartData.items.length === 0) {
-        navigate("/cart");
-        return;
-      }
+        if (!cartData || cartData.items.length === 0) {
+          navigate("/cart");
+          return;
+        }
 
-      setCart(cartData);
+        setCart(cartData);
 
-      const user = await getUserProfile();
-      if (user.address) {
-        setForm(user.address);
+        const user = await getUserProfile();
+        if (user?.address) {
+          setForm(user.address);
+        }
+      } catch (err) {
+        console.error("Checkout load failed:", err);
       }
     };
 
     loadData();
-  }, []);
+  }, [navigate]);
 
   const handleChange = (e) => {
     setForm({
