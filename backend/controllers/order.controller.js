@@ -3,7 +3,8 @@ import Order from "../models/Order.js";
 
 export const placeOrder = async (req, res) => {
   try {
-    const { userId, shippingAddress } = req.body;
+    const { shippingAddress } = req.body;
+    const userId = req.user._id;
 
     const user = await User.findById(userId).populate("cart.product");
 
@@ -69,9 +70,8 @@ export const placeOrder = async (req, res) => {
 
 export const getUserOrders = async (req, res) => {
   try {
-    const { userId } = req.params;
 
-    const orders = await Order.find({ user: userId })
+    const orders = await Order.find({ user: req.user._id})
       .sort({ createdAt: -1 });
 
     res.json({
