@@ -6,6 +6,7 @@ const orderItemSchema = new mongoose.Schema({
     ref: "Product"
   },
   name: String,
+  image: String,
   price: Number,
   quantity: Number
 });
@@ -57,7 +58,11 @@ const orderSchema = new mongoose.Schema(
     isSubscription: {
       type: Boolean,
       default: false
-    }
+    },
+
+    razorpayOrderId: { type: String },
+    razorpayPaymentId: { type: String },
+    razorpaySignature: { type: String }
   },
   { timestamps: true }
 );

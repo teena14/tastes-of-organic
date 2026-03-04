@@ -1,13 +1,30 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import App from "./App";
+import { Provider } from "react-redux";
+import { Toaster } from "react-hot-toast";
+import store from "./app/store";
+import "./index.css";
+import App from "./App.jsx";
 
-localStorage.setItem("userId", "6987971bcb6f4ca73b6abf47");
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 2500,
+            style: {
+              background: "#4a7c59",
+              color: "#fff",
+              borderRadius: "8px",
+              fontFamily: "Inter, sans-serif"
+            }
+          }}
+        />
+      </BrowserRouter>
+    </Provider>
+  </StrictMode>
 );

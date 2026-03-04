@@ -2,7 +2,8 @@ import User from "../models/User.js";
 
 export const addToCart = async (req, res) => {
   try {
-    const { userId, productId } = req.body;
+    const userId = req.user._id;
+    const { productId } = req.body;
 
     const user = await User.findById(userId);
 
@@ -38,9 +39,14 @@ export const addToCart = async (req, res) => {
 
 export const removeFromCart = async (req, res) => {
   try {
-    const { userId, productId } = req.body;
+    const userId = req.user._id;
+    const { productId } = req.body;
 
     const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     user.cart = user.cart.filter(
       item => item.product.toString() !== productId
@@ -61,7 +67,7 @@ export const removeFromCart = async (req, res) => {
 
 export const getCart = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user._id;
 
     const user = await User.findById(userId).populate("cart.product");
 
@@ -77,7 +83,6 @@ export const getCart = async (req, res) => {
       totalItems += item.quantity;
     });
 
-    // Delivery logic
     let delivery = subtotal >= 500 || subtotal === 0 ? 0 : 50;
 
     let total = subtotal + delivery;
@@ -98,9 +103,11 @@ export const getCart = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
 export const updateCartQuantity = async (req, res) => {
   try {
-    const { userId, productId, action } = req.body;
+    const userId = req.user._id;
+    const { productId, action } = req.body;
 
     const user = await User.findById(userId);
 

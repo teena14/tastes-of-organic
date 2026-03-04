@@ -1,137 +1,104 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import toast from "react-hot-toast";
 import { getCart } from "../services/cartApi";
 import { placeOrder } from "../services/orderApi";
 import { getUserProfile } from "../services/userApi";
-import { useNavigate } from "react-router-dom";
+import { createRazorpayOrder, verifyPayment } from "../services/paymentApi";
+import { clearCart } from "../slices/cartSlice";
+
+const FIELDS = ["name", "phone", "addressLine1", "addressLine2", "city", "state", "postalCode"];
 
 const Checkout = () => {
   const [cart, setCart] = useState(null);
+  const [form, setForm] = useState({ name: "", phone: "", addressLine1: "", addressLine2: "", city: "", state: "", postalCode: "" });
+  const [placing, setPlacing] = useState(false);
   const navigate = useNavigate();
-
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    addressLine1: "",
-    addressLine2: "",
-    city: "",
-    state: "",
-    postalCode: ""
-  });
+  const dispatch = useDispatch();
+  const { user } = useSelector(s => s.auth);
 
   useEffect(() => {
-    const loadData = async () => {
+    const load = async () => {
       try {
         const cartData = await getCart();
-
-        if (!cartData || cartData.items.length === 0) {
-          navigate("/cart");
-          return;
-        }
-
+        if (!cartData || cartData.items.length === 0) { navigate("/cart"); return; }
         setCart(cartData);
-
-        const user = await getUserProfile();
-        if (user?.address) {
-          setForm(user.address);
-        }
-      } catch (err) {
-        console.error("Checkout load failed:", err);
-      }
+        const profile = await getUserProfile();
+        if (profile?.address?.name) setForm(profile.address);
+      } catch { navigate("/cart"); }
     };
-
-    loadData();
+    load();
   }, [navigate]);
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
-  };
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async () => {
-    if (
-      !form.name ||
-      !form.phone ||
-      !form.addressLine1 ||
-      !form.city ||
-      !form.state ||
-      !form.postalCode
-    ) {
-      alert("Please fill all required address fields.");
-      return;
+  const handlePayment = async () => {
+    const required = ["name", "phone", "addressLine1", "city", "state", "postalCode"];
+    if (!required.every(f => form[f]?.trim())) { toast.error("Fill required fields"); return; }
+    try {
+      setPlacing(true);
+      const orderRes = await placeOrder(form);
+      const orderId = orderRes.order._id;
+      const rzpRes = await createRazorpayOrder(orderRes.order.total * 100);
+
+      const options = {
+        key: rzpRes.keyId,
+        amount: rzpRes.amount,
+        currency: rzpRes.currency,
+        name: "Tastes of Organic",
+        order_id: rzpRes.razorpayOrderId,
+        prefill: { name: form.name, contact: form.phone, email: user?.email || "" },
+        handler: async (response) => {
+          try {
+            await verifyPayment({ ...response, orderId });
+            dispatch(clearCart());
+            toast.success("Payment successful!");
+            navigate(`/order-success/${orderId}`);
+          } catch { toast.error("Payment verification failed"); }
+        },
+        modal: { ondismiss: () => { toast("Payment cancelled"); setPlacing(false); } }
+      };
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed");
+      setPlacing(false);
     }
-
-    const result = await placeOrder(form);
-    navigate(`/order-success/${result.order._id}`);
   };
 
   if (!cart) return <p>Loading...</p>;
 
   return (
-    <div>
-      <h1>Checkout</h1>
-
-      <h3>Order Summary</h3>
-      <p>Subtotal: ₹{cart.subtotal}</p>
-      <p>Delivery: ₹{cart.delivery}</p>
-      <h2>Total: ₹{cart.total}</h2>
+    <div style={{ padding: "16px" }}>
+      <h2>Checkout</h2>
 
       <h3>Shipping Details</h3>
+      {FIELDS.map(f => (
+        <div key={f}>
+          <label>{f}{f !== "addressLine2" ? " *" : ""}:</label>
+          <input name={f} value={form[f]} onChange={handleChange} style={{ width: "300px" }} />
+        </div>
+      ))}
 
-      <input
-        name="name"
-        placeholder="Full Name"
-        value={form.name}
-        onChange={handleChange}
-      />
-
-      <input
-        name="phone"
-        placeholder="Phone Number"
-        value={form.phone}
-        onChange={handleChange}
-      />
-
-      <input
-        name="addressLine1"
-        placeholder="Address Line 1"
-        value={form.addressLine1}
-        onChange={handleChange}
-      />
-
-      <input
-        name="addressLine2"
-        placeholder="Address Line 2"
-        value={form.addressLine2}
-        onChange={handleChange}
-      />
-
-      <input
-        name="city"
-        placeholder="City"
-        value={form.city}
-        onChange={handleChange}
-      />
-
-      <input
-        name="state"
-        placeholder="State"
-        value={form.state}
-        onChange={handleChange}
-      />
-
-      <input
-        name="postalCode"
-        placeholder="Postal Code"
-        value={form.postalCode}
-        onChange={handleChange}
-      />
-
-      <br /><br />
-
-      <button onClick={handleSubmit}>
-        Place Order
+      <br />
+      <h3>Order Summary</h3>
+      <table>
+        <thead><tr><th>Product</th><th>Qty</th><th>Price</th></tr></thead>
+        <tbody>
+          {cart.items.map(item => (
+            <tr key={item.product._id}>
+              <td>{item.product.name}</td>
+              <td>{item.quantity}</td>
+              <td>₹{item.product.price * item.quantity}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p>Subtotal: ₹{cart.subtotal} | Delivery: {cart.delivery === 0 ? "FREE" : `₹${cart.delivery}`} | <strong>Total: ₹{cart.total}</strong></p>
+      <br />
+      <button onClick={handlePayment} disabled={placing}>
+        {placing ? "Processing..." : `Pay ₹${cart.total} via Razorpay`}
       </button>
     </div>
   );

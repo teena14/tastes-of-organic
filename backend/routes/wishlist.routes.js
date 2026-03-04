@@ -4,11 +4,12 @@ import {
   removeFromWishlist,
   getWishlist
 } from "../controllers/wishlist.controller.js";
+import { protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/add", addToWishlist);
-router.post("/remove", removeFromWishlist);
-router.get("/:userId", getWishlist);
+router.post("/add", protect, addToWishlist);
+router.post("/remove", protect, removeFromWishlist);
+router.get("/", protect, getWishlist);
 
 export default router;

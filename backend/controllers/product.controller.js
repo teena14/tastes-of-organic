@@ -1,55 +1,80 @@
 import Product from "../models/Product.js";
 
-// @desc    Get all products
-// @route   GET /api/products
-// @access  Public
-export const getAllProducts = async (req, res) => {
+export const getProducts = async (req, res) => {
   try {
-    const { category } = req.query;
+    const { search, category, sort, featured } = req.query;
 
-    let filter = {};
+    const query = {};
 
-    if (category) {
-      filter.category = category.toUpperCase();
+    if (search) {
+      query.name = { $regex: search, $options: "i" };
     }
 
-    const products = await Product.find(filter).sort({ createdAt: -1 });
+    if (category && category !== "ALL") {
+      query.category = category.toUpperCase();
+    }
 
-    res.status(200).json({
+    if (featured === "true") {
+      query.isFeatured = true;
+    }
+
+    let sortOption = { createdAt: -1 };
+    if (sort === "price-asc") sortOption = { price: 1 };
+    if (sort === "price-desc") sortOption = { price: -1 };
+    if (sort === "rating") sortOption = { rating: -1 };
+    if (sort === "newest") sortOption = { createdAt: -1 };
+
+    const products = await Product.find(query).sort(sortOption);
+
+    return res.json({
       success: true,
-      count: products.length,
       data: products
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch products"
-    });
+    console.error("Get products error:", error);
+    return res.status(500).json({ message: "Failed to fetch products" });
   }
 };
 
-// @desc    Get single product by ID
-// @route   GET /api/products/:id
-// @access  Public
 export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
 
     if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found"
-      });
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    return res.status(200).json({
-      success: true,
-      data: product
-    });
+    return res.json({ success: true, data: product });
   } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid product ID"
+    console.error("Get product by id error:", error);
+    return res.status(500).json({ message: "Failed to fetch product" });
+  }
+};
+
+export const createProduct = async (req, res) => {
+  try {
+    const product = await Product.create(req.body);
+    return res.status(201).json({ success: true, data: product });
+  } catch (error) {
+    console.error("Create product error:", error);
+    return res.status(500).json({ message: "Failed to create product" });
+  }
+};
+
+export const updateProduct = async (req, res) => {
+  try {
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
     });
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    return res.json({ success: true, data: product });
+  } catch (error) {
+    console.error("Update product error:", error);
+    return res.status(500).json({ message: "Failed to update product" });
   }
 };

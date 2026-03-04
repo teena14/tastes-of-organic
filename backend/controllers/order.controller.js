@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import Order from "../models/Order.js";
 
+// Place order (creates pending order - cart cleared only on payment verify)
 export const placeOrder = async (req, res) => {
   try {
     const { shippingAddress } = req.body;
@@ -22,7 +23,7 @@ export const placeOrder = async (req, res) => {
       !shippingAddress.postalCode
     ) {
       return res.status(400).json({
-        message: "Shipping address is required"
+        message: "All required shipping address fields must be filled"
       });
     }
 
@@ -34,6 +35,7 @@ export const placeOrder = async (req, res) => {
       return {
         product: item.product._id,
         name: item.product.name,
+        image: item.product.images?.[0] || "",
         price: item.product.price,
         quantity: item.quantity
       };
@@ -42,6 +44,7 @@ export const placeOrder = async (req, res) => {
     const delivery = subtotal >= 500 ? 0 : 50;
     const total = subtotal + delivery;
 
+    // Create order with pending payment status
     const order = await Order.create({
       user: userId,
       items: orderItems,
@@ -49,12 +52,12 @@ export const placeOrder = async (req, res) => {
       subtotal,
       delivery,
       total,
-      paymentMethod: "online"
+      paymentMethod: "online",
+      paymentStatus: "pending"
     });
 
+    // Save shipping address to user profile for autofill next time
     user.address = shippingAddress;
-    // clear cart
-    user.cart = [];
     await user.save();
 
     return res.json({
@@ -63,15 +66,14 @@ export const placeOrder = async (req, res) => {
     });
 
   } catch (error) {
-    console.log(error);
+    console.error("Place order error:", error);
     return res.status(500).json({ message: "Server error" });
   }
 };
 
 export const getUserOrders = async (req, res) => {
   try {
-
-    const orders = await Order.find({ user: req.user._id})
+    const orders = await Order.find({ user: req.user._id })
       .sort({ createdAt: -1 });
 
     res.json({
@@ -80,14 +82,17 @@ export const getUserOrders = async (req, res) => {
     });
 
   } catch (error) {
-    console.log(error);
+    console.error("Get orders error:", error);
     res.status(500).json({ message: "Failed to fetch orders" });
   }
 };
 
 export const getOrderById = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findOne({
+      _id: req.params.id,
+      user: req.user._id
+    });
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
@@ -98,8 +103,7 @@ export const getOrderById = async (req, res) => {
       data: order
     });
   } catch (error) {
-    console.log(error);
+    console.error("Get order by id error:", error);
     res.status(500).json({ message: "Failed to fetch order" });
   }
 };
-

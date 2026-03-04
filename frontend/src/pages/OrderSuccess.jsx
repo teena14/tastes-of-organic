@@ -1,37 +1,37 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { getOrderById } from "../services/orderApi";
 
 const OrderSuccess = () => {
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadOrder = async () => {
-      const data = await getOrderById(orderId);
-      setOrder(data);
-    };
-
-    loadOrder();
+    getOrderById(orderId).then(d => setOrder(d)).catch(() => { }).finally(() => setLoading(false));
   }, [orderId]);
 
-  if (!order) return <p>Loading order...</p>;
+  if (loading) return <p>Loading...</p>;
+  if (!order) return <p>Order not found. <Link to="/orders">My Orders</Link></p>;
 
   return (
-    <div>
-      <h1>Order Placed Successfully</h1>
-
-      <p><strong>Order ID:</strong> {order._id}</p>
-      <p><strong>Total:</strong> ₹{order.total}</p>
-      <p><strong>Payment Status:</strong> {order.paymentStatus}</p>
-      <p><strong>Order Status:</strong> {order.orderStatus}</p>
-
+    <div style={{ padding: "16px" }}>
+      <h2>✅ Order Placed Successfully</h2>
+      <p>Order ID: <strong style={{ fontFamily: "monospace" }}>#{order._id.slice(-8).toUpperCase()}</strong></p>
+      <p>Total: ₹{order.total}</p>
+      <p>Payment: {order.paymentStatus}</p>
+      <p>Status: {order.orderStatus}</p>
       <h3>Items</h3>
-      {order.items.map(item => (
-        <div key={item.product}>
-          {item.name} × {item.quantity}
-        </div>
-      ))}
+      <ul>
+        {order.items.map((item, i) => (
+          <li key={i}>{item.name} × {item.quantity} — ₹{item.price}</li>
+        ))}
+      </ul>
+      <h3>Shipping Address</h3>
+      <p>{order.shippingAddress.name}, {order.shippingAddress.phone}</p>
+      <p>{order.shippingAddress.addressLine1}, {order.shippingAddress.city}, {order.shippingAddress.state} – {order.shippingAddress.postalCode}</p>
+      <br />
+      <Link to="/orders">View All Orders</Link> | <Link to="/shop">Continue Shopping</Link>
     </div>
   );
 };

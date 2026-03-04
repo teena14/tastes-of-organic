@@ -1,12 +1,15 @@
 import express from "express";
-import { placeOrder } from "../controllers/order.controller.js";
-import { getUserOrders } from "../controllers/order.controller.js";
-import { getOrderById } from "../controllers/order.controller.js";
+import {
+  placeOrder,
+  getUserOrders,
+  getOrderById
+} from "../controllers/order.controller.js";
+import { protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/place", placeOrder);
-router.get("/user/:userId", getUserOrders);
-router.get("/:id", getOrderById);
+router.post("/place", protect, placeOrder);
+router.get("/user", protect, getUserOrders);
+router.get("/:id", protect, getOrderById);
 
 export default router;

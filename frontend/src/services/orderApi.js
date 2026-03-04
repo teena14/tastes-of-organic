@@ -1,9 +1,7 @@
 import api from "./api";
-import getUserId from "../utils/getUserId";
 
 export const placeOrder = async (shippingAddress) => {
   const res = await api.post("/orders/place", {
-    userId: getUserId(),
     shippingAddress
   });
 
@@ -11,7 +9,7 @@ export const placeOrder = async (shippingAddress) => {
 };
 
 export const getMyOrders = async () => {
-  const res = await api.get(`/orders/user/${getUserId()}`);
+  const res = await api.get("/orders/user");
   return res.data.data;
 };
 

@@ -1,7 +1,6 @@
 import api from "./api";
-import getUserId from "../utils/getUserId";
 
 export const getUserProfile = async () => {
-  const res = await api.get(`/users/${getUserId()}`);
+  const res = await api.get("/users/me");
   return res.data.data;
 };

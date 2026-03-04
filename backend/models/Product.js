@@ -55,6 +55,18 @@ const productSchema = new mongoose.Schema(
     reviewCount: {
       type: Number,
       default: 0
+    },
+
+    mrp: {
+      type: Number,
+      default: 0
+    },
+
+    tags: [{ type: String }],
+
+    isFeatured: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }

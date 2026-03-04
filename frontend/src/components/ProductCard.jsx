@@ -1,48 +1,52 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { addToCart, getCart } from "../services/cartApi";
 import { addToWishlist, removeFromWishlist } from "../services/wishlistApi";
-import { addToCart } from "../services/cartApi";
+import { setCart } from "../slices/cartSlice";
+import { addToWishlistLocal, removeFromWishlistLocal } from "../slices/wishlistSlice";
 
 const ProductCard = ({ product }) => {
-  const [wishlisted, setWishlisted] = useState(false);
+  const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector(s => s.auth);
+  const wishlistIds = useSelector(s => s.wishlist.productIds);
+  const isWished = wishlistIds.includes(product._id);
+
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    if (!isAuthenticated) { toast.error("Please login"); return; }
+    try {
+      await addToCart(product._id);
+      const data = await getCart();
+      if (data) dispatch(setCart(data));
+      toast.success("Added to cart");
+    } catch { toast.error("Failed"); }
+  };
 
   const handleWishlist = async (e) => {
-    e.preventDefault(); // prevent Link navigation when clicking heart
-
+    e.preventDefault();
+    if (!isAuthenticated) { toast.error("Please login"); return; }
     try {
-      if (wishlisted) {
+      if (isWished) {
         await removeFromWishlist(product._id);
-        setWishlisted(false);
+        dispatch(removeFromWishlistLocal(product._id));
       } else {
         await addToWishlist(product._id);
-        setWishlisted(true);
+        dispatch(addToWishlistLocal(product._id));
       }
-    } catch (error) {
-      console.error("Wishlist error:", error);
-    }
+    } catch { toast.error("Failed"); }
   };
 
   return (
-    <Link to={`/product/${product._id}`}>
-      <div className="product-card">
-        <img src={product.images?.[0]} alt={product.name} width="150" />
-        <h3>{product.name}</h3>
-        <p>₹{product.price}</p>
-
-        <button onClick={handleWishlist}>
-          {wishlisted ? "💚" : "🤍"}
-        </button>
-        <button
-          onClick={async (e) => {
-            e.preventDefault();
-            await addToCart(product._id);
-            alert("Added to cart");
-          }}
-        >
-          Add to Cart
-        </button>
-      </div>
-    </Link>
+    <div style={{ border: "1px solid #ccc", padding: "8px", marginBottom: "8px" }}>
+      <Link to={`/product/${product._id}`}>
+        <img src={product.images?.[0]} alt={product.name} width="100" height="100" style={{ objectFit: "cover" }} />
+        <p><strong>{product.name}</strong></p>
+        <p>₹{product.price} {product.mrp > product.price && <s>₹{product.mrp}</s>}</p>
+      </Link>
+      <button onClick={handleAddToCart}>Add to Cart</button>{" "}
+      <button onClick={handleWishlist}>{isWished ? "♥ Wishlisted" : "♡ Wishlist"}</button>
+    </div>
   );
 };
 

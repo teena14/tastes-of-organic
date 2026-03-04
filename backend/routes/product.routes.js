@@ -1,19 +1,20 @@
 import express from "express";
 import {
-  getAllProducts,
-  getProductById
+  getProducts,
+  getProductById,
+  createProduct,
+  updateProduct
 } from "../controllers/product.controller.js";
+import { protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-// @route   GET /api/products
-// @desc    Get all products
-// @access  Public
-router.get("/", getAllProducts);
-
-// @route   GET /api/products/:id
-// @desc    Get single product
-// @access  Public
+// GET /api/products?search=&category=&sort=&featured=
+router.get("/", getProducts);
 router.get("/:id", getProductById);
+
+// Admin only - will add role middleware later
+router.post("/", protect, createProduct);
+router.put("/:id", protect, updateProduct);
 
 export default router;
