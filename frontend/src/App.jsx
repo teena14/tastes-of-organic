@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart } from "./slices/cartSlice";
@@ -27,6 +27,10 @@ import Blog from "./pages/Blog";
 function App() {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector(s => s.auth);
+  const location = useLocation();
+
+  // Hide global Navbar on Home — it has its own embedded floating navbar
+  const hideNavbar = location.pathname === "/";
 
   // Load cart and wishlist into Redux on auth change
   useEffect(() => {
@@ -38,7 +42,7 @@ function App() {
 
   return (
     <>
-      <Navbar />
+      {!hideNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
@@ -63,7 +67,7 @@ function App() {
           <ProtectedRoute><OrderSuccess /></ProtectedRoute>
         } />
       </Routes>
-      <Footer />
+      {!hideNavbar && <Footer />}
     </>
   );
 }

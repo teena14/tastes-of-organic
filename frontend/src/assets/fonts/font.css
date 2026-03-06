@@ -1,0 +1,30 @@
+/*
+  Custom Brand Fonts
+  ==================
+  Place your font files in this folder and uncomment the relevant @font-face blocks.
+
+  Expected files:
+    - DXLactose-Regular.woff2   (Title / H1 — font-heading)
+    - CameraObscura-Regular.woff2 (H2, H3 — font-subheading)
+
+  Tailwind uses:
+    font-heading    → 'DX Lactose'   (hero title, big display text)
+    font-subheading → 'Camera Obscura' (section headings)
+    font-body       → 'Poppins'       (all body text, loaded from Google Fonts)
+*/
+
+/*
+@font-face {
+  font-family: 'DX Lactose';
+  src: url('./DXLactose-Regular.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Camera Obscura';
+  src: url('./CameraObscura-Regular.woff2') format('woff2');
+  font-weight: 400 600;
+  font-display: swap;
+}
+*/
