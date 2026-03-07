@@ -13,9 +13,10 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // On the home page the navbar overlays the hero image → keep it absolute
-    // On every other page → sticky at the top of the viewport
-    const isHome = location.pathname === "/";
+    // On pages with a full-bleed coloured banner (home hero, shop banner)
+    // the navbar overlays it via absolute positioning.
+    // On every other page it is sticky at the top.
+    const isOverlay = location.pathname === "/" || location.pathname.startsWith("/shop");
 
     const handleLogout = () => {
         dispatch(logout());
@@ -26,8 +27,8 @@ const Navbar = () => {
 
     return (
         <div
-            className={isHome ? "absolute top-5 left-0 right-0 z-30 flex justify-center px-6" : "sticky top-0 z-30 flex justify-center px-6 py-3"}
-            style={isHome ? {} : { backgroundColor: "rgba(248,246,240,0.95)", backdropFilter: "blur(8px)" }}
+            className={isOverlay ? "absolute top-5 left-0 right-0 z-30 flex justify-center px-6" : "sticky top-0 z-30 flex justify-center px-6 py-3"}
+            style={isOverlay ? {} : { backgroundColor: "rgba(248,246,240,0.95)", backdropFilter: "blur(8px)" }}
         >
             <nav
                 className="w-full bg-white/95 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-between px-8 py-3"

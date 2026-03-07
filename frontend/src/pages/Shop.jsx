@@ -266,7 +266,7 @@ const Shop = () => {
       {/* ── Page header banner ── */}
       <div
         className="relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #388E3C 100%)", paddingTop: "80px", paddingBottom: "48px" }}
+        style={{ background: "linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #388E3C 100%)", paddingTop: "120px", paddingBottom: "56px" }}
       >
         {/* Decorative circles */}
         <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full opacity-10" style={{ backgroundColor: "#fff" }} />
