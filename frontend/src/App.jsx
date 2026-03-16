@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart } from "./slices/cartSlice";
@@ -27,6 +27,9 @@ import Blog from "./pages/Blog";
 function App() {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector(s => s.auth);
+  const { pathname } = useLocation();
+
+  const isAuthPage = pathname === "/login" || pathname === "/register";
 
   // Load cart and wishlist into Redux on auth change
   useEffect(() => {
@@ -38,7 +41,7 @@ function App() {
 
   return (
     <>
-      <Navbar />
+      {!isAuthPage && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
@@ -63,7 +66,7 @@ function App() {
           <ProtectedRoute><OrderSuccess /></ProtectedRoute>
         } />
       </Routes>
-      <Footer />
+      {!isAuthPage && <Footer />}
     </>
   );
 }
