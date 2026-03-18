@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-import mongoSanitize from "express-mongo-sanitize";
 import "dotenv/config";
 
 import productRoutes from "./routes/product.routes.js";
@@ -28,8 +27,6 @@ app.use(
 
 app.use(express.json({ limit: "10kb" })); // Limit body size
 
-// Prevent NoSQL injection attacks
-app.use(mongoSanitize());
 
 // Rate limiting on auth routes (prevent brute force)
 const authLimiter = rateLimit({
