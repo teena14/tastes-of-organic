@@ -236,7 +236,16 @@ const Shop = () => {
     loadProducts();
   }, [loadProducts]);
 
-  // sync URL params
+  // When URL params change externally (e.g. navbar search while already on /shop),
+  // sync them into local state so a new product fetch is triggered.
+  useEffect(() => {
+    const urlSearch = searchParams.get("search") || "";
+    const urlCategory = searchParams.get("category") || "ALL";
+    setSearch(urlSearch);
+    setCategory(urlCategory);
+  }, [searchParams]);
+
+  // sync local state back to URL params
   useEffect(() => {
     const params = {};
     if (search) params.search = search;
