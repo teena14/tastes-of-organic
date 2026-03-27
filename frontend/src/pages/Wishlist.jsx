@@ -140,7 +140,11 @@ const WishlistCard = ({ product, onRemove, onAddToCart }) => {
       {/* Image / Thumbnail */}
       <Link
         to={`/product/${product._id}`}
-        style={{ textDecoration: "none", display: "block", position: "relative" }}
+        style={{
+          textDecoration: "none",
+          display: "block",
+          position: "relative",
+        }}
       >
         <div
           style={{
@@ -226,7 +230,6 @@ const WishlistCard = ({ product, onRemove, onAddToCart }) => {
               fontSize: "14px",
               color: C.text,
               textDecoration: "none",
-              display: "block",
               lineHeight: 1.4,
               marginBottom: "4px",
               overflow: "hidden",
@@ -339,7 +342,9 @@ const WishlistCard = ({ product, onRemove, onAddToCart }) => {
               Moved to Cart
             </>
           ) : (
-            <>🛒 Add to Cart</>
+            <>
+              🛒 Add to Cart
+            </>
           )}
         </button>
       </div>
