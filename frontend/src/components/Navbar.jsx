@@ -174,9 +174,15 @@ const Navbar = () => {
                             <Link to="/orders" aria-label="Orders" className="hover:opacity-70 transition-opacity hidden sm:block">
                                 <Package size={18} />
                             </Link>
-                            <span className="text-sm font-medium hidden lg:block" style={{ color: "#1B5E20" }}>
-                                {user?.name?.split(" ")[0]}
-                            </span>
+                            <Link
+                                to="/profile"
+                                aria-label="Profile"
+                                className="flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs transition-all hover:scale-105 hover:shadow-md"
+                                style={{ background: "linear-gradient(135deg,#1B5E20,#2E7D32)", color: "#fff" }}
+                                title={user?.name}
+                            >
+                                {user?.name ? user.name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase() : <User size={14} />}
+                            </Link>
                             <button
                                 onClick={handleLogout}
                                 aria-label="Logout"
