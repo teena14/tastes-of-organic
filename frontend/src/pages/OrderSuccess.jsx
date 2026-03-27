@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
 import { clearCart } from "../slices/cartSlice";
 import { getOrderById } from "../services/orderApi";
-import { checkPaymentStatus } from "../services/paymentApi";
+import { checkPaymentStatus, initiatePhonePePayment } from "../services/paymentApi";
 
 const C = {
   primary: "#1B5E20",
@@ -18,10 +19,35 @@ const C = {
 
 const OrderSuccess = () => {
   const { orderId } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [order, setOrder] = useState(null);
   const [payStatus, setPayStatus] = useState("pending");
   const [loading, setLoading] = useState(true);
+  const [countdown, setCountdown] = useState(60);
+  const [retrying, setRetrying] = useState(false);
+
+  useEffect(() => {
+    if (payStatus === "failed") {
+      if (countdown > 0) {
+        const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+        return () => clearTimeout(timer);
+      } else {
+        navigate("/checkout");
+      }
+    }
+  }, [payStatus, countdown, navigate]);
+
+  const handleRetry = async () => {
+    try {
+      setRetrying(true);
+      const payRes = await initiatePhonePePayment(orderId);
+      if (payRes.redirectUrl) window.location.href = payRes.redirectUrl;
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Retry failed");
+      setRetrying(false);
+    }
+  };
 
   useEffect(() => {
     let attempts = 0;
@@ -94,13 +120,13 @@ const OrderSuccess = () => {
         <div style={{ background: C.cream, border: `1px solid ${C.border}`, borderRadius: "24px", boxShadow: "0 4px 32px rgba(27,94,32,0.08)", overflow: "hidden" }}>
 
           {/* Top banner */}
-          <div style={{ background: isPaid ? "linear-gradient(135deg,#1B5E20,#2E7D32)" : "linear-gradient(135deg,#78909C,#546E7A)", padding: "40px 32px", textAlign: "center" }}>
-            <div style={{ fontSize: "52px", marginBottom: "12px" }}>{isPaid ? "✅" : "⏳"}</div>
+          <div style={{ background: isPaid ? "linear-gradient(135deg,#1B5E20,#2E7D32)" : payStatus === "failed" ? "linear-gradient(135deg,#D32F2F,#B71C1C)" : "linear-gradient(135deg,#78909C,#546E7A)", padding: "40px 32px", textAlign: "center" }}>
+            <div style={{ fontSize: "52px", marginBottom: "12px" }}>{isPaid ? "✅" : payStatus === "failed" ? "❌" : "⏳"}</div>
             <h1 style={{ color: "#fff", margin: 0, fontSize: "22px", fontWeight: 700 }}>
-              {isPaid ? "Order Confirmed!" : "Payment Pending…"}
+              {isPaid ? "Order Confirmed!" : payStatus === "failed" ? "Payment Failed" : "Payment Pending…"}
             </h1>
             <p style={{ color: "rgba(255,255,255,0.8)", margin: "8px 0 0", fontSize: "14px" }}>
-              {isPaid ? "Thank you for choosing Tastes of Organic 🌿" : "We're waiting to hear from PhonePe. This usually takes a few seconds."}
+              {isPaid ? "Thank you for choosing Tastes of Organic 🌿" : payStatus === "failed" ? "Your payment could not be processed." : "We're waiting to hear from PhonePe. This usually takes a few seconds."}
             </p>
           </div>
 
@@ -144,14 +170,35 @@ const OrderSuccess = () => {
             </div>
 
             {/* Actions */}
-            <div style={{ display: "flex", gap: "12px" }}>
-              <Link to="/orders" style={{ flex: 1, textAlign: "center", padding: "12px", borderRadius: "10px", border: `1.5px solid ${C.border}`, fontSize: "13px", fontWeight: 600, color: C.text, textDecoration: "none" }}>
-                My Orders
-              </Link>
-              <Link to="/shop" style={{ flex: 1, textAlign: "center", padding: "12px", borderRadius: "10px", background: C.primary, fontSize: "13px", fontWeight: 600, color: "#fff", textDecoration: "none" }}>
-                Continue Shopping
-              </Link>
-            </div>
+            {payStatus === "failed" ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "16px" }}>
+                <button 
+                  onClick={handleRetry} 
+                  disabled={retrying}
+                  style={{ width: "100%", padding: "14px", borderRadius: "10px", background: C.primary, fontSize: "14px", fontWeight: 600, color: "#fff", border: "none", cursor: retrying ? "not-allowed" : "pointer" }}
+                >
+                  {retrying ? "Initiating..." : "Retry Payment"}
+                </button>
+                <button 
+                  onClick={() => navigate("/checkout")} 
+                  style={{ width: "100%", padding: "14px", borderRadius: "10px", border: `1.5px solid ${C.border}`, background: C.cream, fontSize: "14px", fontWeight: 600, color: C.text, cursor: "pointer" }}
+                >
+                  Return to Checkout
+                </button>
+                <p style={{ textAlign: "center", fontSize: "12px", color: C.muted, margin: "8px 0 0" }}>
+                  Automatically returning in {countdown}s...
+                </p>
+              </div>
+            ) : (
+              <div style={{ display: "flex", gap: "12px" }}>
+                <Link to="/orders" style={{ flex: 1, textAlign: "center", padding: "12px", borderRadius: "10px", border: `1.5px solid ${C.border}`, fontSize: "13px", fontWeight: 600, color: C.text, textDecoration: "none" }}>
+                  My Orders
+                </Link>
+                <Link to="/shop" style={{ flex: 1, textAlign: "center", padding: "12px", borderRadius: "10px", background: C.primary, fontSize: "13px", fontWeight: 600, color: "#fff", textDecoration: "none" }}>
+                  Continue Shopping
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
