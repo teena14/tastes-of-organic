@@ -1,7 +1,7 @@
 import api from "./api";
 
-export const createRazorpayOrder = (amount) =>
-    api.post("/payment/create-order", { amount }).then(r => r.data);
+export const initiatePhonePePayment = (orderId) =>
+    api.post("/payment/initiate", { orderId }).then(r => r.data);
 
-export const verifyPayment = (payload) =>
-    api.post("/payment/verify", payload).then(r => r.data);
+export const checkPaymentStatus = (orderId) =>
+    api.get(`/payment/status/${orderId}`).then(r => r.data);

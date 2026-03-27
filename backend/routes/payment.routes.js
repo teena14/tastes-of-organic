@@ -1,10 +1,11 @@
 import express from "express";
-import { createRazorpayOrder, verifyPayment } from "../controllers/payment.controller.js";
+import { initiatePayment, phonePeCallback, checkPaymentStatus } from "../controllers/payment.controller.js";
 import { protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/create-order", protect, createRazorpayOrder);
-router.post("/verify", protect, verifyPayment);
+router.post("/initiate",              protect, initiatePayment);
+router.post("/phonepe-callback",               phonePeCallback);   // PhonePe S2S — no auth
+router.get("/status/:orderId",        protect, checkPaymentStatus);
 
 export default router;

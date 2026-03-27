@@ -48,7 +48,9 @@ const subscriptionSchema = new mongoose.Schema(
       type: String,
       enum: ["PENDING", "ACTIVE", "CANCELLED", "COMPLETED"],
       default: "PENDING"
-    }
+    },
+
+    phonePeTransactionId: { type: String, default: null }
   },
   { timestamps: true }
 );

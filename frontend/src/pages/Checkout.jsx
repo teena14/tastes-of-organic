@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { getCart } from "../services/cartApi";
 import { placeOrder } from "../services/orderApi";
 import { getUserProfile } from "../services/userApi";
-import { createRazorpayOrder, verifyPayment } from "../services/paymentApi";
-import { clearCart } from "../slices/cartSlice";
+import { initiatePhonePePayment } from "../services/paymentApi";
 
 const C = {
   bg: "#F5F3EE",
@@ -116,7 +115,7 @@ const PayButton = ({ onClick, loading, amount }) => {
         transform: hov && !loading ? "translateY(-1px)" : "translateY(0)",
         transition: "all 0.18s ease",
       }}>
-      {loading ? "Processing…" : `Pay ₹${amount} via Razorpay`}
+      {loading ? "Processing…" : `Proceed to Payment  ₹${amount}`}
     </button>
   );
 };
@@ -127,8 +126,7 @@ const Checkout = () => {
   const [form, setForm] = useState({ name: "", phone: "", addressLine1: "", addressLine2: "", city: "", state: "", postalCode: "" });
   const [placing, setPlacing] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { user } = useSelector(s => s.auth);
+  const { user: _user } = useSelector(s => s.auth);
 
   useEffect(() => {
     const load = async () => {
@@ -150,26 +148,14 @@ const Checkout = () => {
     if (!required.every(f => form[f]?.trim())) { toast.error("Please fill all required fields"); return; }
     try {
       setPlacing(true);
+      // 1. Create our DB order
       const orderRes = await placeOrder(form);
       const orderId = orderRes.order._id;
-      const rzpRes = await createRazorpayOrder(orderRes.order.total * 100);
-      const options = {
-        key: rzpRes.keyId, amount: rzpRes.amount, currency: rzpRes.currency,
-        name: "Tastes of Organic", description: "Pure Himalayan Organic Products",
-        order_id: rzpRes.razorpayOrderId,
-        prefill: { name: form.name, contact: form.phone, email: user?.email || "" },
-        theme: { color: C.primary },
-        handler: async (response) => {
-          try {
-            await verifyPayment({ ...response, orderId });
-            dispatch(clearCart());
-            toast.success("Payment successful! 🌿");
-            navigate(`/order-success/${orderId}`);
-          } catch { toast.error("Payment verification failed"); }
-        },
-        modal: { ondismiss: () => { toast("Payment cancelled"); setPlacing(false); } },
-      };
-      new window.Razorpay(options).open();
+      // 2. Initiate PhonePe payment — get redirect URL
+      const payRes = await initiatePhonePePayment(orderId);
+      if (!payRes.redirectUrl) throw new Error("No redirect URL received");
+      // 3. Redirect user to PhonePe hosted page
+      window.location.href = payRes.redirectUrl;
     } catch (err) {
       toast.error(err?.response?.data?.message || "Something went wrong");
       setPlacing(false);
