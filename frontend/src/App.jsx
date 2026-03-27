@@ -24,13 +24,14 @@ import Register from "./pages/Register";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
 import Profile from "./pages/Profile";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector(s => s.auth);
   const { pathname } = useLocation();
 
-  const isAuthPage = pathname === "/login" || pathname === "/register";
+  const isAuthPage = pathname === "/login" || pathname === "/register" || pathname === "/forgot-password";
 
   // Load cart and wishlist into Redux on auth change
   useEffect(() => {
@@ -53,6 +54,7 @@ function App() {
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         <Route path="/wishlist" element={
           <ProtectedRoute><Wishlist /></ProtectedRoute>

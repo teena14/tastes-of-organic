@@ -293,18 +293,26 @@ const Login = () => {
 
                         {/* Password */}
                         <div>
-                            <label
-                                style={{
-                                    display: "block",
-                                    fontSize: "12px",
-                                    fontWeight: 600,
-                                    color: C.text,
-                                    marginBottom: "7px",
-                                    letterSpacing: "0.03em",
-                                }}
-                            >
-                                Password
-                            </label>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "7px" }}>
+                                <label
+                                    style={{
+                                        fontSize: "12px",
+                                        fontWeight: 600,
+                                        color: C.text,
+                                        letterSpacing: "0.03em",
+                                    }}
+                                >
+                                    Password
+                                </label>
+                                <Link
+                                    to="/forgot-password"
+                                    style={{ fontSize: "12px", color: C.primary, fontWeight: 500, textDecoration: "none" }}
+                                    onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
+                                    onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+                                >
+                                    Forgot password?
+                                </Link>
+                            </div>
                             <div style={{ position: "relative" }}>
                                 <input
                                     id="login-password"
