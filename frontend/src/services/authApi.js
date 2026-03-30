@@ -9,3 +9,8 @@ export const registerUser = async (name, email, password) => {
   const res = await api.post("/auth/register", { name, email, password });
   return res.data;
 };
+
+export const googleAuthApi = async (token) => {
+  const res = await api.post("/auth/google", { token });
+  return res.data;
+};

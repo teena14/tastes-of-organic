@@ -16,7 +16,9 @@ import subscriptionRoutes from "./routes/subscription.routes.js";
 const app = express();
 
 // --- Security Middleware ---
-app.use(helmet());
+app.use(helmet({
+  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
+}));
 
 app.use(
   cors({

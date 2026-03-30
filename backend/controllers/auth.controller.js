@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import axios from "axios";
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -95,6 +96,51 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Login failed" });
+  }
+};
+
+/* ─── Google Auth ────────────────────────────────────── */
+export const googleAuth = async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    // Fetch user info using the Google Access Token
+    const response = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    
+    const { sub: googleId, email, name, picture } = response.data;
+
+    // Check if user already exists
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // Create user if they don't exist
+      user = await User.create({
+        name,
+        email,
+        googleId,
+      });
+    } else if (!user.googleId) {
+      // Connect Google account to existing user
+      user.googleId = googleId;
+      await user.save();
+    }
+
+    res.json({
+      success: true,
+      token: generateToken(user._id),
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email
+      }
+    });
+  } catch (error) {
+    console.error("Google Auth Error:", error);
+    res.status(500).json({ message: "Google Authentication failed" });
   }
 };
 
