@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 import { getMyOrders } from "../services/orderApi";
+import { initiatePhonePePayment } from "../services/paymentApi";
 
 /* ─── Design tokens (same palette as Wishlist / Cart) ─── */
 const C = {
@@ -123,6 +125,7 @@ const Timeline = ({ currentStatus }) => {
 const OrderCard = ({ order }) => {
   const [open, setOpen] = useState(false);
   const [hov, setHov] = useState(false);
+  const [retrying, setRetrying] = useState(false);
 
   const statusCfg = getStatus(order.orderStatus);
   const paymentCfg = getPayment(order.paymentStatus);
@@ -132,6 +135,18 @@ const OrderCard = ({ order }) => {
   const timeStr = new Date(order.createdAt).toLocaleTimeString("en-IN", {
     hour: "2-digit", minute: "2-digit",
   });
+
+  const handleRetry = async (e) => {
+    e.stopPropagation();
+    try {
+      setRetrying(true);
+      const payRes = await initiatePhonePePayment(order._id);
+      if (payRes.redirectUrl) window.location.href = payRes.redirectUrl;
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Retry failed");
+      setRetrying(false);
+    }
+  };
 
   return (
     <div
@@ -329,6 +344,23 @@ const OrderCard = ({ order }) => {
               </span>
             </div>
           </div>
+
+          {/* Retry Button for Failed Payments */}
+          {order.paymentStatus?.toLowerCase() === "failed" && (
+            <button
+              onClick={handleRetry}
+              disabled={retrying}
+              style={{
+                width: "100%", marginTop: "12px", padding: "14px", borderRadius: "10px",
+                background: C.primary, color: "#fff", border: "none",
+                fontFamily: "Poppins, sans-serif", fontSize: "14px", fontWeight: 600,
+                cursor: retrying ? "not-allowed" : "pointer",
+                boxShadow: "0 4px 16px rgba(27,94,32,0.24)",
+              }}
+            >
+              {retrying ? "Initiating..." : "Retry Payment"}
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -430,7 +462,7 @@ const Orders = () => {
             }}>
               My Orders
               {!loading && (() => {
-                const count = orders.filter(o => o.paymentStatus?.toLowerCase() === "paid").length;
+                const count = orders.filter(o => ["paid", "failed"].includes(o.paymentStatus?.toLowerCase())).length;
                 return (
                   <span style={{ marginLeft: "12px", fontSize: "15px", fontWeight: 500, color: C.muted }}>
                     {count} {count === 1 ? "order" : "orders"}
@@ -485,13 +517,13 @@ const Orders = () => {
 
         {/* ── Orders list ── */}
         {!loading && (() => {
-          const paidOrders = orders
-            .filter(o => o.paymentStatus?.toLowerCase() === "paid")
+          const displayedOrders = orders
+            .filter(o => ["paid", "failed"].includes(o.paymentStatus?.toLowerCase()))
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          if (paidOrders.length === 0) return null;
+          if (displayedOrders.length === 0) return null;
           return (
             <div>
-              {paidOrders.map(order => (
+              {displayedOrders.map(order => (
                 <OrderCard key={order._id} order={order} />
               ))}
             </div>
