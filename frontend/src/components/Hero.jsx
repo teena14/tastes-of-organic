@@ -1,13 +1,12 @@
 import { Link } from "react-router-dom";
-import hero from "../assets/hero_section_image.png";
 
 const Hero = () => {
     return (
         <section className="relative h-[520px] w-full overflow-hidden">
 
             {/* Background image */}
-            <img src={hero} alt="hero" className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-black/30" />
+            <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=2070" alt="Beautiful organic spices and farms" className="absolute inset-0 w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/20" />
 
             {/* Hero text */}
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-white text-center px-4">
