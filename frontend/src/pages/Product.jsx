@@ -694,13 +694,14 @@ const Product = () => {
                     style={{
                       fontSize: "12px",
                       fontWeight: 700,
-                      color: "#fff",
-                      backgroundColor: "#E53935",
-                      padding: "2px 8px",
+                      color: "#1B5E20",
+                      backgroundColor: "#E8F5E9",
+                      padding: "4px 10px",
                       borderRadius: "999px",
+                      border: "1px solid rgba(212, 230, 200, 0.8)"
                     }}
                   >
-                    -{discount}%
+                    {discount}% OFF
                   </span>
                 )}
               </div>

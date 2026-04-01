@@ -97,10 +97,10 @@ const ProductCard = ({ product, placeholder = false }) => {
         {/* Discount badge */}
         {discount > 0 && (
           <span
-            className="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-full text-white"
-            style={{ backgroundColor: "#E53935" }}
+            className="absolute top-3 left-3 text-[10px] font-bold px-2 py-1 rounded-full shadow-sm backdrop-blur-md"
+            style={{ backgroundColor: "rgba(255, 255, 255, 0.9)", color: "#1B5E20", border: "1px solid rgba(212, 230, 200, 0.5)" }}
           >
-            -{discount}%
+            {discount}% OFF
           </span>
         )}
 
