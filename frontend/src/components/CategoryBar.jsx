@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 
 const CATEGORIES = [
-    { name: "Honey", img: "https://images.unsplash.com/photo-1587049352847-4d451cb5ad26?auto=format&fit=crop&w=150&q=80" },
-    { name: "Pulses", img: "https://images.unsplash.com/photo-1582046182061-9fbd597d81a8?auto=format&fit=crop&w=150&q=80" },
-    { name: "Flour", img: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=150&q=80" },
-    { name: "Millets", img: "https://images.unsplash.com/photo-1621252178229-2be81fb1ca03?auto=format&fit=crop&w=150&q=80" },
-    { name: "Juices", img: "https://images.unsplash.com/photo-1622597467836-f3285f2131b8?auto=format&fit=crop&w=150&q=80" },
-    { name: "Spices", img: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=150&q=80" },
+    { id: "HONEY",  name: "Honey",   img: "https://images.unsplash.com/photo-1587049352847-4d451cb5ad26?auto=format&fit=crop&w=150&q=80" },
+    { id: "PULSES", name: "Pulses",  img: "https://images.unsplash.com/photo-1582046182061-9fbd597d81a8?auto=format&fit=crop&w=150&q=80" },
+    { id: "FLOUR",  name: "Flour",   img: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=150&q=80" },
+    { id: "MILLET", name: "Millets", img: "https://images.unsplash.com/photo-1621252178229-2be81fb1ca03?auto=format&fit=crop&w=150&q=80" },
+    { id: "JUICES", name: "Juices",  img: "https://images.unsplash.com/photo-1622597467836-f3285f2131b8?auto=format&fit=crop&w=150&q=80" },
+    { id: "SPICES", name: "Spices",  img: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=150&q=80" },
 ];
 
 const CategoryBar = () => (
@@ -15,8 +15,8 @@ const CategoryBar = () => (
         <div className="bg-white shadow-xl rounded-2xl flex items-center justify-between gap-4 px-10 py-4 w-full max-w-3xl">
             {CATEGORIES.map((cat) => (
                 <Link
-                    key={cat.name}
-                    to={`/shop?category=${cat.name.toLowerCase()}`}
+                    key={cat.id}
+                    to={`/shop?category=${cat.id}`}
                     className="flex flex-col items-center gap-2 group"
                 >
                     <div className="w-14 h-14 rounded-full overflow-hidden shadow-sm flex items-center justify-center border-2 border-[#F5EDBB] group-hover:border-[#C8D9B0] transition-colors duration-200">

@@ -23,6 +23,7 @@ const productSchema = new mongoose.Schema(
         "SPICES",
         "OILS",
         "JUICE",
+        "JUICES",
         "FLOUR"
       ],
       required: true
