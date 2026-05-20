@@ -11,6 +11,8 @@ const CATEGORIES = [
   { id: "PULSES", label: "Pulses" },
   { id: "WHEAT", label: "Wheat" },
   { id: "MILLET", label: "Millet" },
+  { id: "FLOUR", label: "Flour" },
+  { id: "JUICES", label: "Juices" },
   { id: "SPICES", label: "Spices" },
   { id: "OILS", label: "Oils" },
 ];

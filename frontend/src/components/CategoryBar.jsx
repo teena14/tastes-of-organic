@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 const CATEGORIES = [
     { name: "Honey", img: "https://images.unsplash.com/photo-1587049352847-4d451cb5ad26?auto=format&fit=crop&w=150&q=80" },
     { name: "Pulses", img: "https://images.unsplash.com/photo-1582046182061-9fbd597d81a8?auto=format&fit=crop&w=150&q=80" },
-    { name: "Grains", img: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=150&q=80" },
-    { name: "Flour", img: "https://images.unsplash.com/photo-1508119069796-0160d5c079bc?auto=format&fit=crop&w=150&q=80" },
+    { name: "Flour", img: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=150&q=80" },
     { name: "Millets", img: "https://images.unsplash.com/photo-1621252178229-2be81fb1ca03?auto=format&fit=crop&w=150&q=80" },
+    { name: "Juices", img: "https://images.unsplash.com/photo-1622597467836-f3285f2131b8?auto=format&fit=crop&w=150&q=80" },
     { name: "Spices", img: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=150&q=80" },
 ];
 

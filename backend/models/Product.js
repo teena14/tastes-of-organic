@@ -21,7 +21,9 @@ const productSchema = new mongoose.Schema(
         "WHEAT",
         "MILLET",
         "SPICES",
-        "OILS"
+        "OILS",
+        "JUICE",
+        "FLOUR"
       ],
       required: true
     },
