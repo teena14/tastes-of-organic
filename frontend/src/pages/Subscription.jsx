@@ -27,7 +27,7 @@ const SORT_OPTIONS = [
   { value: "rating", label: "Top Rated" },
 ];
 
-const CATEGORIES = ["All", "Honey", "Pulses", "Wheat", "Millet", "Spices", "Oils"];
+const CATEGORIES = ["All", "Honey", "Pulses", "Flour", "Millet", "Juices", "Spices"];
 
 /* ─────────────────────────── SubscriptionProductCard ──────────────── */
 const SubscriptionProductCard = ({ product, cartItem, onAdd, onIncrease, onDecrease }) => {
@@ -217,6 +217,7 @@ const SubscriptionProductCard = ({ product, cartItem, onAdd, onIncrease, onDecre
 const Subscription = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("newest");
   const [category, setCategory] = useState("All");
@@ -228,9 +229,13 @@ const Subscription = () => {
 
   useEffect(() => {
     setLoading(true);
+    setFetchError(false);
     fetchProducts({})
       .then((r) => setProducts((r.data || []).filter((p) => p.isSubscriptionAllowed)))
-      .catch(() => setProducts([]))
+      .catch(() => {
+        setProducts([]);
+        setFetchError(true);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -238,7 +243,11 @@ const Subscription = () => {
   const displayed = products
     .filter((p) => {
       const matchSearch = !search || p.name?.toLowerCase().includes(search.toLowerCase());
-      const matchCat = category === "All" || p.category?.toUpperCase() === category.toUpperCase();
+      const catMap = { Honey: "HONEY", Pulses: "PULSES", Flour: "FLOUR", Millet: "MILLET", Juices: "JUICES", Spices: "SPICES" };
+      const matchCat =
+        category === "All" ||
+        p.category === catMap[category] ||
+        p.category?.toUpperCase() === category.toUpperCase();
       return matchSearch && matchCat;
     })
     .sort((a, b) => {
@@ -487,6 +496,15 @@ const Subscription = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          ) : fetchError ? (
+            <div style={{ textAlign: "center", padding: "60px 0", color: "#888" }}>
+              <p style={{ fontSize: "15px", marginBottom: "8px", color: "#1B5E20", fontWeight: 600 }}>
+                Could not load products
+              </p>
+              <p style={{ fontSize: "13px", maxWidth: "360px", margin: "0 auto" }}>
+                Start the backend on port 5000 (<code>cd backend &amp;&amp; npm run dev</code>), then refresh.
+              </p>
             </div>
           ) : displayed.length === 0 ? (
             <div style={{ textAlign: "center", padding: "60px 0", color: "#888" }}>

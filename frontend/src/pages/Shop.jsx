@@ -215,6 +215,7 @@ const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [category, setCategory] = useState(searchParams.get("category") || "ALL");
   const [sort, setSort] = useState("newest");
@@ -225,10 +226,12 @@ const Shop = () => {
   const loadProducts = useCallback(async () => {
     try {
       setLoading(true);
+      setFetchError(false);
       const result = await fetchProducts({ search, category, sort });
       setProducts(result.data || []);
     } catch {
       setProducts([]);
+      setFetchError(true);
     } finally {
       setLoading(false);
     }
@@ -423,6 +426,14 @@ const Shop = () => {
             {loading ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
                 {[...Array(8)].map((_, i) => <SkeletonCard key={i} />)}
+              </div>
+            ) : fetchError ? (
+              <div className="flex flex-col items-center justify-center py-24">
+                <h3 className="text-lg font-semibold mb-1" style={{ color: "#1B5E20" }}>Could not load products</h3>
+                <p className="text-sm text-center max-w-md" style={{ color: "#888" }}>
+                  The shop could not reach the server. Make sure the backend is running on port 5000
+                  (<code className="text-xs">cd backend &amp;&amp; npm run dev</code>), then refresh this page.
+                </p>
               </div>
             ) : displayed.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24">

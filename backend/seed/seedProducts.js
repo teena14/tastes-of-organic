@@ -4,7 +4,6 @@ import Product from "../models/Product.js";
 
 dotenv.config();
 
-// 🔌 Connect to MongoDB
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -15,70 +14,12 @@ const connectDB = async () => {
   }
 };
 
-// 🌱 Seed data
 const products = [
-  // ── Existing products ─────────────────────────────────────────────
-  {
-    name: "Raw Organic Honey",
-    description: "Pure, unprocessed organic honey sourced directly from forests. Rich in antioxidants and natural enzymes.",
-    category: "HONEY",
-    price: 499,
-    mrp: 599,
-    images: [
-      "https://images.unsplash.com/photo-1587049352847-4d451cb5ad26?auto=format&fit=crop&w=600&q=80"
-    ],
-    stock: 50,
-    isSubscriptionAllowed: true,
-    isFeatured: true,
-    tags: ["honey", "organic", "raw"]
-  },
-  {
-    name: "Organic Toor Dal",
-    description: "High-quality organic toor dal, rich in protein and sourced from certified organic farms.",
-    category: "PULSES",
-    price: 189,
-    mrp: 229,
-    images: [
-      "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80"
-    ],
-    stock: 100,
-    isSubscriptionAllowed: true,
-    isFeatured: false,
-    tags: ["pulses", "dal", "protein"]
-  },
-  {
-    name: "Whole Wheat Atta",
-    description: "Stone-ground organic whole wheat flour, perfect for soft chapatis and healthy baking.",
-    category: "WHEAT",
-    price: 299,
-    mrp: 349,
-    images: [
-      "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80"
-    ],
-    stock: 80,
-    isSubscriptionAllowed: true,
-    isFeatured: false,
-    tags: ["wheat", "atta", "flour"]
-  },
-  {
-    name: "Organic Foxtail Millet",
-    description: "Healthy organic millet packed with nutrients. Gluten-free and rich in fibre and minerals.",
-    category: "MILLET",
-    price: 249,
-    mrp: 299,
-    images: [
-      "https://images.unsplash.com/photo-1621252178229-2be81fb1ca03?auto=format&fit=crop&w=600&q=80"
-    ],
-    stock: 60,
-    isSubscriptionAllowed: true,
-    isFeatured: false,
-    tags: ["millet", "gluten-free", "grains"]
-  },
-
-  // ── New products ───────────────────────────────────────────────────
+  // ── Honey ─────────────────────────────────────────────────────────
   {
     name: "Van Tulsi Honey",
-    description: "Rare wild-crafted Van Tulsi (Forest Basil) honey with a distinctively aromatic flavour and powerful medicinal properties. Collected from remote untouched forest regions.",
+    description:
+      "Rare wild-crafted Van Tulsi (forest basil) honey with a distinctively aromatic flavour and calming properties. Collected from remote, pesticide-free forest regions.",
     category: "HONEY",
     price: 649,
     mrp: 799,
@@ -88,25 +29,12 @@ const products = [
     stock: 35,
     isSubscriptionAllowed: true,
     isFeatured: true,
-    tags: ["honey", "tulsi", "van tulsi", "wild honey", "medicinal", "organic"]
-  },
-  {
-    name: "Jamun Honey",
-    description: "Dark, rich honey collected from Jamun (Indian Blackberry) blossoms. Known for its low glycemic index and benefits for diabetics. Bold, fruity, and naturally sweet.",
-    category: "HONEY",
-    price: 599,
-    mrp: 749,
-    images: [
-      "https://images.unsplash.com/photo-1601063458289-77247ba485ec?auto=format&fit=crop&w=600&q=80"
-    ],
-    stock: 40,
-    isSubscriptionAllowed: true,
-    isFeatured: true,
-    tags: ["honey", "jamun", "diabetic-friendly", "low GI", "organic"]
+    tags: ["honey", "van tulsi", "tulsi", "wild", "organic"]
   },
   {
     name: "Wildforest Organic Honey",
-    description: "Multi-floral raw honey harvested from untouched wild forests. Unfiltered, unpasteurised and packed with natural pollen, enzymes, and antioxidants.",
+    description:
+      "Multi-floral raw honey harvested from untouched wild forests. Unfiltered, unpasteurised, and rich in natural pollen, enzymes, and antioxidants.",
     category: "HONEY",
     price: 549,
     mrp: 699,
@@ -116,11 +44,61 @@ const products = [
     stock: 55,
     isSubscriptionAllowed: true,
     isFeatured: true,
-    tags: ["honey", "wild", "multifloral", "raw", "organic", "unfiltered"]
+    tags: ["honey", "wildforest", "multifloral", "raw", "organic"]
   },
   {
-    name: "Atta (Organic Wheat Flour)",
-    description: "100% organic chakki-fresh atta stone-ground from premium whole wheat grains. Makes soft, nutritious rotis with a natural earthy aroma. No additives or preservatives.",
+    name: "Jamun Honey",
+    description:
+      "Dark, rich honey from Jamun (Indian blackberry) blossoms. Naturally low glycemic index with a bold, fruity sweetness—popular for everyday wellness routines.",
+    category: "HONEY",
+    price: 599,
+    mrp: 749,
+    images: [
+      "https://images.unsplash.com/photo-1601063458289-77247ba485ec?auto=format&fit=crop&w=600&q=80"
+    ],
+    stock: 40,
+    isSubscriptionAllowed: true,
+    isFeatured: true,
+    tags: ["honey", "jamun", "low GI", "organic"]
+  },
+  {
+    name: "Ashwagandha Honey",
+    description:
+      "Pure forest honey infused with organic Ashwagandha root extract. Supports stress relief, better sleep, and daily vitality—ideal with warm water or milk.",
+    category: "HONEY",
+    price: 699,
+    mrp: 849,
+    images: [
+      "https://images.unsplash.com/photo-1587049352847-4d451cb5ad26?auto=format&fit=crop&w=600&q=80"
+    ],
+    stock: 30,
+    isSubscriptionAllowed: true,
+    isFeatured: true,
+    tags: ["honey", "ashwagandha", "adaptogen", "wellness", "organic"]
+  },
+
+  // ── Millets ─────────────────────────────────────────────────────────
+  {
+    name: "Organic Ragi (Finger Millet)",
+    description:
+      "Whole organic ragi grains—naturally gluten-free, high in calcium and fibre. Perfect for porridge, rotis, and healthy baking.",
+    category: "MILLET",
+    price: 229,
+    mrp: 279,
+    images: [
+      "https://images.unsplash.com/photo-1621252178229-2be81fb1ca03?auto=format&fit=crop&w=600&q=80"
+    ],
+    stock: 70,
+    isSubscriptionAllowed: true,
+    isFeatured: false,
+    tags: ["millet", "ragi", "finger millet", "gluten-free", "organic"]
+  },
+
+  // ── Flour ───────────────────────────────────────────────────────────
+  {
+    name: "Organic Wheat Flour (Atta)",
+    description:
+      "100% organic chakki-ground whole wheat atta. Stone-milled for soft rotis with a natural earthy aroma—no bleach, additives, or preservatives.",
     category: "FLOUR",
     price: 279,
     mrp: 329,
@@ -130,62 +108,113 @@ const products = [
     stock: 90,
     isSubscriptionAllowed: true,
     isFeatured: false,
-    tags: ["atta", "flour", "wheat", "chakki", "organic"]
+    tags: ["flour", "wheat", "atta", "chakki", "organic"]
   },
+
+  // ── Pulses ──────────────────────────────────────────────────────────
   {
-    name: "Kodu ka Aata (Kodo Millet Flour)",
-    description: "Ancient-grain Kodo Millet flour — naturally gluten-free, high in fibre and antioxidants. Ideal for making healthy rotis, dosas, and baked goods. A true superfood flour.",
-    category: "FLOUR",
-    price: 319,
-    mrp: 389,
+    name: "Organic Toor Dal",
+    description:
+      "Premium split pigeon peas grown without chemicals. High in protein and fibre—ideal for everyday dal, sambar, and comfort meals.",
+    category: "PULSES",
+    price: 189,
+    mrp: 229,
     images: [
-      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=600&q=80"
+      "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80"
     ],
-    stock: 45,
+    stock: 100,
     isSubscriptionAllowed: true,
     isFeatured: false,
-    tags: ["kodo", "millet flour", "gluten-free", "ancient grain", "aata", "organic"]
+    tags: ["pulses", "toor dal", "arhar", "protein", "organic"]
   },
   {
-    name: "Aloe Vera Juice",
-    description: "Cold-pressed pure Aloe Vera juice made from hand-harvested inner leaf gel. Supports digestion, boosts immunity, and promotes healthy skin. No added sugar or preservatives.",
+    name: "Organic Kali Dal (Whole Black Urad)",
+    description:
+      "Whole black urad dal with the skin intact—rich, earthy flavour and excellent for dals, stews, and traditional Punjabi kali dal recipes.",
+    category: "PULSES",
+    price: 199,
+    mrp: 249,
+    images: [
+      "https://images.unsplash.com/photo-1586201375767-838a74e4a76b?auto=format&fit=crop&w=600&q=80"
+    ],
+    stock: 85,
+    isSubscriptionAllowed: true,
+    isFeatured: false,
+    tags: ["pulses", "kali dal", "urad", "black dal", "organic"]
+  },
+
+  // ── Juices ──────────────────────────────────────────────────────────
+  {
+    name: "Organic Aloe Vera Juice",
+    description:
+      "Cold-pressed aloe vera inner-leaf juice. Supports digestion, hydration, and healthy skin—no added sugar or artificial preservatives.",
     category: "JUICES",
     price: 349,
     mrp: 429,
     images: [
       "https://images.unsplash.com/photo-1622597467836-f3285f2131b8?auto=format&fit=crop&w=600&q=80"
     ],
-    stock: 70,
+    stock: 65,
     isSubscriptionAllowed: true,
     isFeatured: true,
-    tags: ["aloe vera", "juice", "digestive", "skin care", "immunity", "organic"]
+    tags: ["juice", "aloe vera", "digestive", "organic"]
   },
   {
-    name: "Buras Juice (Rhododendron Flower Juice)",
-    description: "Handcrafted Buras (Buransh / Rhododendron) flower juice sourced from the Himalayan hills of Uttarakhand. Rich in Vitamin C and natural antioxidants. A rare seasonal Himalayan treasure.",
+    name: "Organic Amla Juice",
+    description:
+      "Fresh-pressed Indian gooseberry juice packed with Vitamin C and antioxidants. A tangy daily tonic for immunity and natural energy.",
     category: "JUICES",
-    price: 399,
-    mrp: 499,
+    price: 329,
+    mrp: 399,
     images: [
-      "https://images.unsplash.com/photo-1534353436294-0dbd4bdac845?auto=format&fit=crop&w=600&q=80"
+      "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=600&q=80"
     ],
-    stock: 30,
-    isSubscriptionAllowed: false,
+    stock: 60,
+    isSubscriptionAllowed: true,
+    isFeatured: false,
+    tags: ["juice", "amla", "vitamin C", "immunity", "organic"]
+  },
+
+  // ── Spices ──────────────────────────────────────────────────────────
+  {
+    name: "Organic Mirchi Powder (Red Chilli)",
+    description:
+      "Sun-dried, stone-ground red chilli powder with vibrant colour and balanced heat. Adds depth to curries, pickles, and everyday cooking.",
+    category: "SPICES",
+    price: 149,
+    mrp: 189,
+    images: [
+      "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80"
+    ],
+    stock: 120,
+    isSubscriptionAllowed: true,
+    isFeatured: false,
+    tags: ["spices", "mirchi", "chilli", "organic"]
+  },
+  {
+    name: "Organic Haldi Powder (Turmeric)",
+    description:
+      "High-curcumin organic turmeric powder from single-origin farms. Warm, earthy aroma—essential for curries, golden milk, and daily wellness.",
+    category: "SPICES",
+    price: 179,
+    mrp: 219,
+    images: [
+      "https://images.unsplash.com/photo-1615485290381-481e4e967f65?auto=format&fit=crop&w=600&q=80"
+    ],
+    stock: 110,
+    isSubscriptionAllowed: true,
     isFeatured: true,
-    tags: ["buras", "buransh", "rhododendron", "himalayan", "juice", "seasonal", "vitamin C"]
+    tags: ["spices", "haldi", "turmeric", "curcumin", "organic"]
   }
 ];
 
-// 🚀 Run seed
 const seedProducts = async () => {
   try {
     await connectDB();
 
-    // Clear existing products first
     await Product.deleteMany();
     console.log("Existing products cleared");
 
-    // Insert all products
     await Product.insertMany(products);
     console.log(`✅ ${products.length} products seeded successfully`);
 
