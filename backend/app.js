@@ -21,9 +21,23 @@ app.use(helmet({
   crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
 }));
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://tastes-of-organic.vercel.app"
+];
+
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin(origin, callback) {
+      // Allow requests without an Origin header (e.g. Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true
   })
 );
