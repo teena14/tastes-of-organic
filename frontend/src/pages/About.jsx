@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { Droplet, Wheat, Leaf, Wine, Sprout, Microscope, Package, Handshake, Mountain, Recycle } from "lucide-react";
 import heroImg from "../assets/about_hero.png";
 import founderImg from "../assets/about_founder.png";
 import productsImg from "../assets/about_products.png";
@@ -365,10 +366,10 @@ const ProductsSection = () => {
 
                     {/* Product categories */}
                     {[
-                        { emoji: "🍯", title: "Forest Honeys", desc: "Multifloral, rhododendron, and mountain herb honey — raw and unprocessed." },
-                        { emoji: "🌾", title: "Heritage Grains", desc: "Red hill rice, mandua (finger millet), jhangora (barnyard millet) and more." },
-                        { emoji: "🌿", title: "Dried Herbs & Spices", desc: "Timur pepper, tej patta, turmeric, wild nettle — dried at altitude." },
-                        { emoji: "🫙", title: "Cold-Pressed Oils", desc: "Apricot, walnut, hemp seed and sesame — pressed slowly, never heated." },
+                        { emoji: <Droplet size={18} />, title: "Forest Honeys", desc: "Multifloral, rhododendron, and mountain herb honey — raw and unprocessed." },
+                        { emoji: <Wheat size={18} />, title: "Heritage Grains", desc: "Red hill rice, mandua (finger millet), jhangora (barnyard millet) and more." },
+                        { emoji: <Leaf size={18} />, title: "Dried Herbs & Spices", desc: "Timur pepper, tej patta, turmeric, wild nettle — dried at altitude." },
+                        { emoji: <Wine size={18} />, title: "Cold-Pressed Oils", desc: "Apricot, walnut, hemp seed and sesame — pressed slowly, never heated." },
                     ].map((item) => (
                         <div key={item.title} style={{
                             display: "flex", alignItems: "flex-start", gap: "14px",
@@ -404,32 +405,32 @@ const ValuesSection = () => {
     const [ref, visible] = useFadeIn();
     const values = [
         {
-            icon: "🌱",
+            icon: <Sprout size={24} />,
             title: "No Middlemen",
             desc: "We source directly from farming families. Every rupee you spend reaches the hands that grew your food.",
         },
         {
-            icon: "🔬",
+            icon: <Microscope size={24} />,
             title: "Third-Party Tested",
             desc: "Every batch goes through independent lab testing for pesticide residues, heavy metals, and adulterants.",
         },
         {
-            icon: "📦",
+            icon: <Package size={24} />,
             title: "Minimal Packaging",
             desc: "We use kraft paper, glass, and recycled materials. Our packaging is as clean as what's inside it.",
         },
         {
-            icon: "🤝",
+            icon: <Handshake size={24} />,
             title: "Fair Trade Promise",
             desc: "Farmers receive 30-40% above market price. We believe the people who feed the nation deserve to eat well too.",
         },
         {
-            icon: "🏔️",
+            icon: <Mountain size={24} />,
             title: "Place-Based Purity",
             desc: "Our products are named by district. You'll always know exactly which valley your food came from.",
         },
         {
-            icon: "♻️",
+            icon: <Recycle size={24} />,
             title: "Climate Conscious",
             desc: "We offset every delivery and support agroforestry projects across the Kumaon and Garhwal regions.",
         },
@@ -579,7 +580,7 @@ const FarmerVoicesSection = () => {
                                 </div>
                                 <div>
                                     <p style={{ fontWeight: 700, fontSize: "13px", color: C.text, margin: "0 0 2px" }}>{v.name}</p>
-                                    <p style={{ fontSize: "11px", color: C.muted, margin: 0 }}>🏔️ {v.location}</p>
+                                    <p style={{ fontSize: "11px", color: C.muted, margin: 0 }}><Mountain size={11} className="inline mr-1" /> {v.location}</p>
                                 </div>
                             </div>
                         </div>

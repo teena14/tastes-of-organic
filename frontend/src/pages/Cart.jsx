@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { getCart, updateCartQuantity, removeFromCart } from "../services/cartApi";
+import { getCart, updateCartQuantity, removeFromCart } from "../services/apiClient";
 import { setCart } from "../slices/cartSlice";
 
 const C = {

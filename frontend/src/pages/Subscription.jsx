@@ -2,16 +2,14 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { Search, Heart, Star, Plus, Minus } from "lucide-react";
-import { fetchProducts } from "../services/productApi";
-import { createSubscription, verifySubscriptionPayment } from "../services/subscriptionApi";
+import { fetchProducts } from "../services/apiClient";
+import { createSubscription, verifySubscriptionPayment } from "../services/apiClient";
 import {
   selectPlan,
   addSubscriptionItem,
   updateSubscriptionItem,
   clearSubscription,
 } from "../slices/subscriptionSlice";
-import { addToWishlist, removeFromWishlist } from "../services/wishlistApi";
-import { addToWishlistLocal, removeFromWishlistLocal } from "../slices/wishlistSlice";
 
 /* ─────────────────────────── Constants ─────────────────────────── */
 const PLANS = [
@@ -20,198 +18,9 @@ const PLANS = [
   { months: 12, discount: 20 },
 ];
 
-const SORT_OPTIONS = [
-  { value: "newest", label: "Newest" },
-  { value: "price-asc", label: "Price: Low → High" },
-  { value: "price-desc", label: "Price: High → Low" },
-  { value: "rating", label: "Top Rated" },
-];
+import { SUBSCRIPTION_CATEGORIES as CATEGORIES, SORT_OPTIONS } from "../constants";
 
-const CATEGORIES = ["All", "Honey", "Pulses", "Flour", "Millet", "Juices", "Spices"];
-
-/* ─────────────────────────── SubscriptionProductCard ──────────────── */
-const SubscriptionProductCard = ({ product, cartItem, onAdd, onIncrease, onDecrease }) => {
-  const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((s) => s.auth);
-  const wishlistIds = useSelector((s) => s.wishlist.productIds);
-  const isWished = wishlistIds.includes(product._id);
-
-  const rating = product.rating || 4;
-  const reviewCount = product.reviewCount || 0;
-  const discount =
-    product.mrp > product.price
-      ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
-      : 0;
-
-  const combinedName = [product.name, product.category?.toLowerCase() || ""].join(" ");
-  // e.g. "Amlaa · 100g" style description from product fields
-  const variantLine = product.sizes?.length
-    ? product.sizes.slice(0, 2).join(", ")
-    : product.weight
-      ? product.weight
-      : "";
-
-  const handleWishlist = async (e) => {
-    e.stopPropagation();
-    if (!isAuthenticated) { toast.error("Please login"); return; }
-    try {
-      if (isWished) {
-        await removeFromWishlist(product._id);
-        dispatch(removeFromWishlistLocal(product._id));
-        toast.success("Removed from wishlist");
-      } else {
-        await addToWishlist(product._id);
-        dispatch(addToWishlistLocal(product._id));
-        toast.success("Added to wishlist ♡");
-      }
-    } catch { toast.error("Failed"); }
-  };
-
-  return (
-    <div
-      style={{
-        backgroundColor: "#fff",
-        borderRadius: "12px",
-        overflow: "hidden",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
-        display: "flex",
-        flexDirection: "column",
-        transition: "box-shadow 0.2s, transform 0.2s",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = "0 6px 20px rgba(27,94,32,0.15)";
-        e.currentTarget.style.transform = "translateY(-2px)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.07)";
-        e.currentTarget.style.transform = "translateY(0)";
-      }}
-    >
-      {/* Image */}
-      <div style={{ position: "relative", backgroundColor: "#D4E6C8", aspectRatio: "4/3", overflow: "hidden" }}>
-        {product.images?.[0] ? (
-          <img
-            src={product.images[0]}
-            alt={product.name}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        ) : (
-          <div style={{ width: "100%", height: "100%", backgroundColor: "#C8D9B0" }} />
-        )}
-        {discount > 0 && (
-          <span
-            style={{
-              position: "absolute", top: "6px", left: "6px",
-              backgroundColor: "#E53935", color: "#fff",
-              fontSize: "9px", fontWeight: 700, padding: "2px 6px",
-              borderRadius: "999px",
-            }}
-          >
-            -{discount}%
-          </span>
-        )}
-        <button
-          onClick={handleWishlist}
-          style={{
-            position: "absolute", top: "6px", right: "6px",
-            backgroundColor: isWished ? "#FFEBEE" : "rgba(255,255,255,0.85)",
-            color: isWished ? "#E53935" : "#9E9E9E",
-            border: "none", borderRadius: "999px", padding: "5px",
-            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-            transition: "all 0.2s",
-          }}
-          aria-label="Wishlist"
-        >
-          <Heart size={12} fill={isWished ? "currentColor" : "none"} />
-        </button>
-      </div>
-
-      {/* Body */}
-      <div style={{ padding: "8px 8px 8px", flex: 1, display: "flex", flexDirection: "column" }}>
-        {/* Stars */}
-        <div style={{ display: "flex", alignItems: "center", gap: "1px", marginBottom: "2px" }}>
-          {[...Array(5)].map((_, i) => (
-            <Star
-              key={i}
-              size={9}
-              fill={i < Math.floor(rating) ? "#F59E0B" : "none"}
-              style={{ color: "#F59E0B" }}
-            />
-          ))}
-          <span style={{ fontSize: "9px", color: "#888", marginLeft: "3px" }}>{reviewCount}</span>
-        </div>
-
-        {/* Name */}
-        <p style={{ fontSize: "11px", fontWeight: 600, color: "#222", lineHeight: 1.3, marginBottom: "2px" }}>
-          {product.name}
-        </p>
-
-        {/* Variant info */}
-        {variantLine && (
-          <p style={{ fontSize: "9px", color: "#777", marginBottom: "2px" }}>{variantLine}</p>
-        )}
-
-        {/* Price */}
-        <div style={{ display: "flex", alignItems: "center", gap: "5px", marginBottom: "6px" }}>
-          <span style={{ fontSize: "11px", fontWeight: 700, color: "#1B5E20" }}>₹{product.price}</span>
-          {product.mrp > product.price && (
-            <s style={{ fontSize: "9px", color: "#BDBDBD" }}>₹{product.mrp}</s>
-          )}
-          {discount > 0 && (
-            <span style={{ fontSize: "9px", color: "#388E3C" }}>{discount}%</span>
-          )}
-        </div>
-
-        {/* Add / Qty controls */}
-        <div style={{ marginTop: "auto" }}>
-          {cartItem ? (
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <button
-                onClick={onDecrease}
-                style={{
-                  width: "24px", height: "24px", borderRadius: "999px",
-                  border: "1.5px solid #1B5E20", backgroundColor: "#fff",
-                  color: "#1B5E20", cursor: "pointer", display: "flex",
-                  alignItems: "center", justifyContent: "center",
-                }}
-              >
-                <Minus size={10} />
-              </button>
-              <span style={{ fontSize: "12px", fontWeight: 600, color: "#222", minWidth: "16px", textAlign: "center" }}>
-                {cartItem.quantity}
-              </span>
-              <button
-                onClick={onIncrease}
-                style={{
-                  width: "24px", height: "24px", borderRadius: "999px",
-                  border: "1.5px solid #1B5E20", backgroundColor: "#fff",
-                  color: "#1B5E20", cursor: "pointer", display: "flex",
-                  alignItems: "center", justifyContent: "center",
-                }}
-              >
-                <Plus size={10} />
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={onAdd}
-              style={{
-                width: "100%", padding: "5px 0", borderRadius: "6px",
-                backgroundColor: "#1B5E20", color: "#fff",
-                border: "none", fontSize: "10px", fontWeight: 600,
-                cursor: "pointer", transition: "background-color 0.2s",
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#145214"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#1B5E20"; }}
-            >
-              Add to Cart
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
+import ProductCard, { SubscriptionProductCard } from "../components/ProductCard";
 
 /* ─────────────────────────── Subscription Page ─────────────────────── */
 const Subscription = () => {

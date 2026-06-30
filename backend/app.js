@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import mongoSanitize from "express-mongo-sanitize";
 import "dotenv/config";
 
 import productRoutes from "./routes/product.routes.js";
@@ -28,6 +29,14 @@ app.use(
 );
 
 app.use(express.json({ limit: "10kb" })); // Limit body size
+
+// Data sanitization against NoSQL query injection
+app.use((req, res, next) => {
+  if (req.body) mongoSanitize.sanitize(req.body, { replaceWith: '_' });
+  if (req.query) mongoSanitize.sanitize(req.query, { replaceWith: '_' });
+  if (req.params) mongoSanitize.sanitize(req.params, { replaceWith: '_' });
+  next();
+});
 
 
 // Rate limiting on auth routes (prevent brute force)

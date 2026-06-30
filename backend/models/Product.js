@@ -24,7 +24,8 @@ const productSchema = new mongoose.Schema(
         "OILS",
         "JUICE",
         "JUICES",
-        "FLOUR"
+        "FLOUR",
+        "COMBOS"
       ],
       required: true
     },
@@ -39,6 +40,9 @@ const productSchema = new mongoose.Schema(
         type: String
       }
     ],
+
+    comboItems: [{ type: String }],
+    comboCategories: [{ type: String }],
 
     stock: {
       type: Number,

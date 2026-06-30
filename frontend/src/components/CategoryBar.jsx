@@ -1,13 +1,6 @@
 import { Link } from "react-router-dom";
 
-const CATEGORIES = [
-    { id: "HONEY",  name: "Honey",   img: "https://images.unsplash.com/photo-1587049352847-4d451cb5ad26?auto=format&fit=crop&w=150&q=80" },
-    { id: "PULSES", name: "Pulses",  img: "https://images.unsplash.com/photo-1582046182061-9fbd597d81a8?auto=format&fit=crop&w=150&q=80" },
-    { id: "FLOUR",  name: "Flour",   img: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=150&q=80" },
-    { id: "MILLET", name: "Millets", img: "https://images.unsplash.com/photo-1621252178229-2be81fb1ca03?auto=format&fit=crop&w=150&q=80" },
-    { id: "JUICES", name: "Juices",  img: "https://images.unsplash.com/photo-1622597467836-f3285f2131b8?auto=format&fit=crop&w=150&q=80" },
-    { id: "SPICES", name: "Spices",  img: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=150&q=80" },
-];
+import { FEATURED_CATEGORIES as CATEGORIES } from "../constants";
 
 const CategoryBar = () => (
     /* Negative margin pulls bar up to overlap hero bottom */
@@ -34,3 +27,4 @@ const CategoryBar = () => (
 );
 
 export default CategoryBar;
+

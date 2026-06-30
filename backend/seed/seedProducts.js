@@ -39,7 +39,7 @@ const products = [
     price: 549,
     mrp: 699,
     images: [
-      "https://images.unsplash.com/photo-1471943038655-ee7c88ffbae4?auto=format&fit=crop&w=600&q=80"
+      "https://images.unsplash.com/photo-1601063458289-77247ba485ec?auto=format&fit=crop&w=600&q=80"
     ],
     stock: 55,
     isSubscriptionAllowed: true,
@@ -69,7 +69,7 @@ const products = [
     price: 699,
     mrp: 849,
     images: [
-      "https://images.unsplash.com/photo-1587049352847-4d451cb5ad26?auto=format&fit=crop&w=600&q=80"
+      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=600&q=80"
     ],
     stock: 30,
     isSubscriptionAllowed: true,
@@ -86,7 +86,7 @@ const products = [
     price: 229,
     mrp: 279,
     images: [
-      "https://images.unsplash.com/photo-1621252178229-2be81fb1ca03?auto=format&fit=crop&w=600&q=80"
+      "/images/ragi_millet.png"
     ],
     stock: 70,
     isSubscriptionAllowed: true,
@@ -103,7 +103,7 @@ const products = [
     price: 279,
     mrp: 329,
     images: [
-      "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80"
+      "/images/wheat_flour.png"
     ],
     stock: 90,
     isSubscriptionAllowed: true,
@@ -120,7 +120,7 @@ const products = [
     price: 189,
     mrp: 229,
     images: [
-      "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80"
+      "/images/toor_dal.png"
     ],
     stock: 100,
     isSubscriptionAllowed: true,
@@ -135,7 +135,7 @@ const products = [
     price: 199,
     mrp: 249,
     images: [
-      "https://images.unsplash.com/photo-1586201375767-838a74e4a76b?auto=format&fit=crop&w=600&q=80"
+      "/images/kali_dal.png"
     ],
     stock: 85,
     isSubscriptionAllowed: true,
@@ -152,7 +152,7 @@ const products = [
     price: 349,
     mrp: 429,
     images: [
-      "https://images.unsplash.com/photo-1622597467836-f3285f2131b8?auto=format&fit=crop&w=600&q=80"
+      "/images/aloe_vera_juice.png"
     ],
     stock: 65,
     isSubscriptionAllowed: true,
@@ -167,7 +167,7 @@ const products = [
     price: 329,
     mrp: 399,
     images: [
-      "https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=600&q=80"
+      "/images/amla_juice.png"
     ],
     stock: 60,
     isSubscriptionAllowed: true,
@@ -184,7 +184,7 @@ const products = [
     price: 149,
     mrp: 189,
     images: [
-      "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80"
+      "/images/mirchi_powder.png"
     ],
     stock: 120,
     isSubscriptionAllowed: true,
@@ -199,14 +199,59 @@ const products = [
     price: 179,
     mrp: 219,
     images: [
-      "https://images.unsplash.com/photo-1615485290381-481e4e967f65?auto=format&fit=crop&w=600&q=80"
+      "/images/haldi_powder.png"
     ],
     stock: 110,
     isSubscriptionAllowed: true,
     isFeatured: true,
     tags: ["spices", "haldi", "turmeric", "curcumin", "organic"]
+  },
+
+  // ── Combos ──────────────────────────────────────────────────────────
+  {
+    name: "Immunity Booster Combo",
+    description: "A perfect blend of Amla Juice and Haldi Powder to boost your daily immunity naturally. Includes 1 bottle of Amla Juice and 1 pack of Haldi Powder.",
+    category: "COMBOS",
+    price: Math.round((329 + 179) * 0.9), // 10% discount
+    mrp: 399 + 219,
+    comboItems: [
+      "1x Organic Amla Juice (500ml)",
+      "1x Organic Haldi Powder (250g)"
+    ],
+    comboCategories: ["JUICES", "SPICES"],
+    images: [
+      "/images/amla_juice.png",
+      "/images/haldi_powder.png"
+    ],
+    stock: 50,
+    isSubscriptionAllowed: false,
+    isFeatured: true,
+    tags: ["combo", "immunity", "amla", "haldi", "organic"]
+  },
+  {
+    name: "Essential Kitchen Combo",
+    description: "Stock up your pantry with organic staples: Wheat Flour (Atta), Toor Dal, and Mirchi Powder. Nutrient-rich and chemical-free.",
+    category: "COMBOS",
+    price: Math.round((279 + 189 + 149) * 0.9), // 10% discount
+    mrp: 329 + 229 + 189,
+    comboItems: [
+      "1x Organic Wheat Flour (5kg)",
+      "1x Organic Toor Dal (1kg)",
+      "1x Organic Mirchi Powder (250g)"
+    ],
+    comboCategories: ["FLOUR", "WHEAT", "PULSES", "SPICES"],
+    images: [
+      "/images/wheat_flour.png",
+      "/images/toor_dal.png",
+      "/images/mirchi_powder.png"
+    ],
+    stock: 40,
+    isSubscriptionAllowed: false,
+    isFeatured: true,
+    tags: ["combo", "kitchen", "flour", "dal", "mirchi", "organic"]
   }
 ];
+
 
 const seedProducts = async () => {
   try {
@@ -226,3 +271,4 @@ const seedProducts = async () => {
 };
 
 seedProducts();
+

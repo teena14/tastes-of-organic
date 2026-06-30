@@ -3,8 +3,8 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { clearCart } from "../slices/cartSlice";
-import { getOrderById } from "../services/orderApi";
-import { checkPaymentStatus, initiatePhonePePayment } from "../services/paymentApi";
+import { getOrderById } from "../services/apiClient";
+import { checkPaymentStatus, initiatePhonePePayment } from "../services/apiClient";
 
 const C = {
   primary: "#1B5E20",

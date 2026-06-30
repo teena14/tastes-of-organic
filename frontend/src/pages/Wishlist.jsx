@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { getWishlist, removeFromWishlist } from "../services/wishlistApi";
-import { addToCart, getCart } from "../services/cartApi";
+import { getWishlist, removeFromWishlist } from "../services/apiClient";
+import { addToCart, getCart } from "../services/apiClient";
 import { setWishlist, removeFromWishlistLocal } from "../slices/wishlistSlice";
 import { setCart } from "../slices/cartSlice";
 
@@ -393,13 +393,13 @@ const SkeletonCard = () => (
 /* ─── Main Page ─── */
 const Wishlist = () => {
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { isAuthenticated } = useSelector(s => s.auth);
+  const [loading, setLoading] = useState(isAuthenticated);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated } = useSelector(s => s.auth);
 
   useEffect(() => {
-    if (!isAuthenticated) { setLoading(false); return; }
+    if (!isAuthenticated) return;
     getWishlist()
       .then(d => {
         const data = d || [];

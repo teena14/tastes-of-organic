@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { getCart } from "../services/cartApi";
-import { placeOrder } from "../services/orderApi";
-import { getUserProfile } from "../services/userApi";
-import { initiatePhonePePayment } from "../services/paymentApi";
+import { getCart } from "../services/apiClient";
+import { placeOrder } from "../services/apiClient";
+import { getUserProfile } from "../services/apiClient";
+import { initiatePhonePePayment } from "../services/apiClient";
 
 const C = {
   bg: "#F5F3EE",

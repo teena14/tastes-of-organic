@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { getMyOrders } from "../services/orderApi";
-import { initiatePhonePePayment } from "../services/paymentApi";
+import { getMyOrders } from "../services/apiClient";
+import { initiatePhonePePayment } from "../services/apiClient";
 
 /* ─── Design tokens (same palette as Wishlist / Cart) ─── */
 const C = {
@@ -370,12 +370,12 @@ const OrderCard = ({ order }) => {
 /* ─── Main Orders page ─── */
 const Orders = () => {
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
   const { isAuthenticated } = useSelector(s => s.auth);
+  const [loading, setLoading] = useState(isAuthenticated);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAuthenticated) { setLoading(false); return; }
+    if (!isAuthenticated) return;
     getMyOrders()
       .then(d => setOrders(d || []))
       .catch(() => { })

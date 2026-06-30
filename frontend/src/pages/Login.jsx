@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { login } from "../slices/authSlice";
-import { loginUser, googleAuthApi } from "../services/authApi";
+import { loginUser, googleAuthApi } from "../services/apiClient";
 import { useGoogleLogin } from "@react-oauth/google";
 import loginBg from "../assets/login_bg.png";
 import logo from "../assets/logo.png";

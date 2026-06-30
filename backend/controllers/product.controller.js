@@ -11,7 +11,11 @@ export const getProducts = async (req, res) => {
     }
 
     if (category && category !== "ALL") {
-      query.category = category.toUpperCase();
+      const categories = category.split(',').map(c => c.trim().toUpperCase());
+      query.$or = [
+        { category: { $in: categories } },
+        { category: "COMBOS", comboCategories: { $in: categories } }
+      ];
     }
 
     if (featured === "true") {
@@ -24,10 +28,21 @@ export const getProducts = async (req, res) => {
     if (sort === "rating") sortOption = { rating: -1 };
     if (sort === "newest") sortOption = { createdAt: -1 };
 
-    const products = await Product.find(query).sort(sortOption);
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 50;
+    const skip = (page - 1) * limit;
+
+    const total = await Product.countDocuments(query);
+    const products = await Product.find(query).sort(sortOption).skip(skip).limit(limit);
 
     return res.json({
       success: true,
+      count: products.length,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / limit)
+      },
       data: products
     });
   } catch (error) {

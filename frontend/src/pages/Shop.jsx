@@ -1,28 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { SlidersHorizontal, Search, ChevronDown, X } from "lucide-react";
-import { fetchProducts } from "../services/productApi";
+import { fetchProducts } from "../services/apiClient";
 import ProductCard from "../components/ProductCard";
-
-/* ─── Constants ─────────────────────────────────────────── */
-const CATEGORIES = [
-  { id: "ALL", label: "All Products" },
-  { id: "HONEY", label: "Honey" },
-  { id: "PULSES", label: "Pulses" },
-  { id: "WHEAT", label: "Wheat" },
-  { id: "MILLET", label: "Millet" },
-  { id: "FLOUR", label: "Flour" },
-  { id: "JUICES", label: "Juices" },
-  { id: "SPICES", label: "Spices" },
-  { id: "OILS", label: "Oils" },
-];
-
-const SORT_OPTIONS = [
-  { value: "newest", label: "Newest First" },
-  { value: "price-asc", label: "Price: Low → High" },
-  { value: "price-desc", label: "Price: High → Low" },
-  { value: "rating", label: "Top Rated" },
-];
+import { SHOP_CATEGORIES as CATEGORIES, SORT_OPTIONS } from "../constants";
 
 /* ─── Skeleton card ─────────────────────────────────────── */
 const SkeletonCard = () => (
@@ -37,7 +18,6 @@ const SkeletonCard = () => (
 
 /* ─── Price Range Slider ─────────────────────────────────── */
 const PriceSlider = ({ min, max, value, onChange }) => {
-  const [dragging, setDragging] = useState(null);
 
   const pct = (v) => ((v - min) / (max - min)) * 100;
 
@@ -122,36 +102,51 @@ const Sidebar = ({ category, setCategory, availability, setAvailability, priceRa
           Category
         </p>
         <div className="space-y-2">
-          {CATEGORIES.map((cat) => (
-            <label key={cat.id} className="flex items-center gap-2.5 cursor-pointer group">
-              <input
-                type="radio"
-                name="category"
-                checked={category === cat.id}
-                onChange={() => setCategory(cat.id)}
-                className="hidden"
-              />
-              <span
-                className="w-4 h-4 rounded-sm border-2 flex items-center justify-center transition-all"
-                style={{
-                  borderColor: category === cat.id ? "#1B5E20" : "#BDBDBD",
-                  backgroundColor: category === cat.id ? "#1B5E20" : "transparent",
-                }}
-              >
-                {category === cat.id && (
-                  <svg viewBox="0 0 10 8" width="8" height="8" fill="none">
-                    <path d="M1 4l3 3 5-6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                )}
-              </span>
-              <span
-                className="text-sm transition-colors"
-                style={{ color: category === cat.id ? "#1B5E20" : "#555", fontWeight: category === cat.id ? 500 : 400 }}
-              >
-                {cat.label}
-              </span>
-            </label>
-          ))}
+          {CATEGORIES.map((cat) => {
+            const isChecked = category === "ALL" ? cat.id === "ALL" : category.split(",").includes(cat.id);
+            return (
+              <label key={cat.id} className="flex items-center gap-2.5 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  name="category"
+                  checked={isChecked}
+                  onChange={() => {
+                    if (cat.id === "ALL") {
+                      setCategory("ALL");
+                    } else {
+                      let current = category === "ALL" ? [] : category.split(",").filter(Boolean);
+                      if (current.includes(cat.id)) {
+                        current = current.filter(c => c !== cat.id);
+                      } else {
+                        current.push(cat.id);
+                      }
+                      setCategory(current.length ? current.join(",") : "ALL");
+                    }
+                  }}
+                  className="hidden"
+                />
+                <span
+                  className="w-4 h-4 rounded-sm border-2 flex items-center justify-center transition-all"
+                  style={{
+                    borderColor: isChecked ? "#1B5E20" : "#BDBDBD",
+                    backgroundColor: isChecked ? "#1B5E20" : "transparent",
+                  }}
+                >
+                  {isChecked && (
+                    <svg viewBox="0 0 10 8" width="8" height="8" fill="none">
+                      <path d="M1 4l3 3 5-6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </span>
+                <span
+                  className="text-sm transition-colors"
+                  style={{ color: isChecked ? "#1B5E20" : "#555", fontWeight: isChecked ? 500 : 400 }}
+                >
+                  {cat.label}
+                </span>
+              </label>
+            );
+          })}
         </div>
       </div>
 
@@ -172,27 +167,24 @@ const Sidebar = ({ category, setCategory, availability, setAvailability, priceRa
                 <input
                   type="radio"
                   name="availability"
+                  value={val}
                   checked={active}
-                  onChange={() => setAvailability(active ? "" : val)}
-                  className="hidden"
+                  onChange={() => setAvailability(val)}
+                  className="w-4 h-4 text-[#1B5E20] focus:ring-[#1B5E20] border-gray-300"
+                  style={{ accentColor: "#1B5E20" }}
                 />
-                <span
-                  className="w-4 h-4 rounded-sm border-2 flex items-center justify-center transition-all"
-                  style={{
-                    borderColor: active ? "#1B5E20" : "#BDBDBD",
-                    backgroundColor: active ? "#1B5E20" : "transparent",
-                  }}
-                >
-                  {active && (
-                    <svg viewBox="0 0 10 8" width="8" height="8" fill="none">
-                      <path d="M1 4l3 3 5-6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  )}
-                </span>
                 <span className="text-sm" style={{ color: "#555" }}>{option}</span>
               </label>
             );
           })}
+          {availability && (
+            <button 
+              onClick={() => setAvailability("")}
+              className="text-xs text-[#1B5E20] hover:underline mt-2 inline-block"
+            >
+              Clear selection
+            </button>
+          )}
         </div>
       </div>
 
@@ -258,8 +250,10 @@ const Shop = () => {
     setSearchParams(params, { replace: true });
   }, [search, category, setSearchParams]);
 
-  // client-side price filter
-  const displayed = products.filter((p) => p.price >= priceRange[0] && p.price <= priceRange[1]);
+  // client-side price filter and hide combos from ALL category
+  const displayed = products.filter((p) => {
+    return p.price >= priceRange[0] && p.price <= priceRange[1];
+  });
 
   const activeFiltersCount = [
     category !== "ALL",
@@ -453,7 +447,7 @@ const Shop = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 items-stretch">
                 {displayed.map((p) => (
                   <ProductCard key={p._id} product={p} />
                 ))}

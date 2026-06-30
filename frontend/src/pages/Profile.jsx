@@ -9,13 +9,16 @@ import toast from "react-hot-toast";
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 /* ─── Single inline-editable field ─────────────────────────────── */
-const InlineField = ({ icon: Icon, label, name, value, type = "text", options, onSave }) => {
+const InlineField = ({ label, name, value, type = "text", options, onSave }) => {
     const [editing, setEditing] = useState(false);
     const [draft, setDraft] = useState(value);
+    const [prevValue, setPrevValue] = useState(value);
     const inputRef = useRef(null);
 
-    // Sync draft when parent value changes (e.g. initial load)
-    useEffect(() => { if (!editing) setDraft(value); }, [value, editing]);
+    if (value !== prevValue) {
+        setPrevValue(value);
+        if (!editing) setDraft(value);
+    }
 
     const startEdit = () => { setDraft(value); setEditing(true); setTimeout(() => inputRef.current?.focus(), 50); };
     const cancel = () => { setDraft(value); setEditing(false); };

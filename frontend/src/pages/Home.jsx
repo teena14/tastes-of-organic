@@ -6,9 +6,9 @@ import BeliefSection from "../components/BeliefSection";
 
 const MOCK_PRODUCTS = [
   { _id: "1", name: "Premium Kashmiri Saffron", price: 850, mrp: 1000, images: ["https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=600"], rating: 4.8, reviewCount: 124, sizes: ["1g", "5g"] },
-  { _id: "2", name: "Raw Himalayan Honey", price: 450, mrp: 600, images: ["https://images.unsplash.com/photo-1587049352847-4d451cb5ad26?auto=format&fit=crop&q=80&w=600"], rating: 4.9, reviewCount: 305, sizes: ["250g", "500g"] },
+  { _id: "2", name: "Raw Himalayan Honey", price: 450, mrp: 600, images: ["https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&q=80&w=600"], rating: 4.9, reviewCount: 305, sizes: ["250g", "500g"] },
   { _id: "3", name: "Organic Toor Dal", price: 210, mrp: 250, images: ["https://images.unsplash.com/photo-1515543237350-b3eea1ec8082?auto=format&fit=crop&q=80&w=600"], rating: 4.5, reviewCount: 89, sizes: ["1kg"] },
-  { _id: "4", name: "Stone Ground Wheat Flour", price: 180, mrp: 220, images: ["https://images.unsplash.com/photo-1508119069796-0160d5c079bc?auto=format&fit=crop&q=80&w=600"], rating: 4.7, reviewCount: 412, sizes: ["5kg"] },
+  { _id: "4", name: "Stone Ground Wheat Flour", price: 180, mrp: 220, images: ["https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&q=80&w=600"], rating: 4.7, reviewCount: 412, sizes: ["5kg"] },
 ];
 
 /* ── Section heading — Abel font ── */
@@ -49,7 +49,7 @@ const ConcernGrid = () => (
     </div>
     {/* Row 2 — Card D: spans last 2 columns */}
     <div style={{ gridColumn: "2 / 4" }}>
-      <ConcernCard label={"High\nProtein"} color="yellow" to="/shop?concern=protein" bgUrl="https://images.unsplash.com/photo-1532550907401-ef5ea1150711?auto=format&fit=crop&q=80&w=800" />
+      <ConcernCard label={"High\nProtein"} color="yellow" to="/shop?concern=protein" bgUrl="https://images.unsplash.com/photo-1515543237350-b3eea1ec8082?auto=format&fit=crop&q=80&w=800" />
     </div>
   </div>
 );

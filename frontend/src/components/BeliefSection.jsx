@@ -4,9 +4,9 @@
  */
 const BeliefSection = ({ items }) => {
     const beliefs = items || [
-        { text: "We source directly from trusted organic farmers across India.", icon: "https://images.unsplash.com/photo-1595858882570-3d3f9f4bd1f6?auto=format&fit=crop&q=80&w=150" },
+        { text: "We source directly from trusted organic farmers across India.", icon: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80&w=150" },
         { text: "No chemicals, no shortcuts — just pure, honest ingredients.", icon: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=150" },
-        { text: "Every purchase supports a farming family and sustainable agriculture.", icon: "https://images.unsplash.com/photo-1518531933066-880c102bd9be?auto=format&fit=crop&q=80&w=150" },
+        { text: "Every purchase supports a farming family and sustainable agriculture.", icon: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=150" },
     ];
 
     return (
@@ -49,3 +49,4 @@ const BeliefSection = ({ items }) => {
 };
 
 export default BeliefSection;
+

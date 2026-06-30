@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchProducts } from "../services/productApi";
+import { fetchProducts } from "../services/apiClient";
 import ProductCard from "../components/ProductCard";
 
 const Combos = () => {
@@ -8,9 +8,7 @@ const Combos = () => {
   const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    setFetchError(false);
-    fetchProducts({ featured: true })
+    fetchProducts({ category: "COMBOS" })
       .then((r) => setProducts(r.data || []))
       .catch(() => {
         setProducts([]);
@@ -32,14 +30,14 @@ const Combos = () => {
         <p className="text-xs uppercase tracking-[0.35em] text-white/70 font-light mb-2">Curated bundles</p>
         <h1 className="font-abel text-5xl md:text-6xl text-white uppercase tracking-wide">Combos</h1>
         <p className="mt-3 text-white/70 text-sm font-light max-w-md mx-auto">
-          Featured organic picks — honey, juices, and wellness favourites
+          Handpicked product combinations at a special discount
         </p>
       </div>
 
       <div className="max-w-screen-xl mx-auto px-4 md:px-8 py-10">
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-            {[...Array(8)].map((_, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[...Array(6)].map((_, i) => (
               <div key={i} className="animate-pulse rounded-2xl aspect-[4/3]" style={{ backgroundColor: "#E2ECDA" }} />
             ))}
           </div>
@@ -53,10 +51,10 @@ const Combos = () => {
         ) : products.length === 0 ? (
           <div className="text-center py-24">
             <h3 className="text-lg font-semibold mb-2" style={{ color: "#1B5E20" }}>No combos yet</h3>
-            <p className="text-sm" style={{ color: "#888" }}>Featured products will appear here once added in the database.</p>
+            <p className="text-sm" style={{ color: "#888" }}>Combo packages will appear here once added in the database.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 items-stretch">
             {products.map((p) => (
               <ProductCard key={p._id} product={p} />
             ))}

@@ -16,8 +16,8 @@ import {
   Image,
 } from "lucide-react";
 import api from "../services/api";
-import { addToCart, getCart } from "../services/cartApi";
-import { addToWishlist, removeFromWishlist } from "../services/wishlistApi";
+import { addToCart, getCart } from "../services/apiClient";
+import { addToWishlist, removeFromWishlist } from "../services/apiClient";
 import { setCart } from "../slices/cartSlice";
 import {
   addToWishlistLocal,
@@ -664,6 +664,18 @@ const Product = () => {
             >
               {product.name}
             </h1>
+
+            {/* Combo Items */}
+            {product.category === "COMBOS" && product.comboItems && (
+              <div style={{ marginBottom: "16px" }}>
+                <p style={{ fontSize: "14px", fontWeight: 600, color: "#1B5E20", marginBottom: "4px" }}>What's inside:</p>
+                <ul style={{ margin: 0, paddingLeft: "20px", fontSize: "14px", color: "#44784C" }}>
+                  {product.comboItems.map((item, idx) => (
+                    <li key={idx} style={{ marginBottom: "4px" }}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* Price + rating row */}
             <div
