@@ -5,7 +5,7 @@ import { FEATURED_CATEGORIES as CATEGORIES } from "../constants";
 const CategoryBar = () => (
     /* Negative margin pulls bar up to overlap hero bottom */
     <div className="relative -mt-10 flex justify-center z-20 px-4">
-        <div className="bg-white shadow-xl rounded-2xl flex items-center justify-between gap-4 px-10 py-4 w-full max-w-3xl">
+        <div className="bg-white shadow-xl rounded-2xl flex items-center justify-start md:justify-between gap-6 px-6 md:px-10 py-4 w-full max-w-3xl overflow-x-auto no-scrollbar">
             {CATEGORIES.map((cat) => (
                 <Link
                     key={cat.id}

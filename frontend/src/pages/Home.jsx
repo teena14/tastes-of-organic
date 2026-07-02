@@ -88,23 +88,23 @@ const Home = () => {
       <CategoryBar />
 
       {/* 3. First product grid */}
-      <section className="px-8 md:px-16 py-14 mt-8">
+      <section className="px-4 md:px-16 py-14 mt-8">
         <SectionHeading>Our Products</SectionHeading>
-        <div className="grid grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {loading ? placeholderCards : displayProducts.map((prod) => <ProductCard key={prod._id} product={prod} />)}
         </div>
       </section>
 
       {/* 4. Shop by Concern — asymmetric layout */}
-      <section className="px-8 md:px-16 pb-14">
+      <section className="px-4 md:px-16 pb-14">
         <SectionHeading>Shop by Concern</SectionHeading>
         <ConcernGrid />
       </section>
 
       {/* 5. Second product grid */}
-      <section className="px-8 md:px-16 pb-14">
+      <section className="px-4 md:px-16 pb-14">
         <SectionHeading>Our Products</SectionHeading>
-        <div className="grid grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {loading ? placeholderCards : displayProducts.map((prod) => <ProductCard key={`second-${prod._id}`} product={prod} />)}
         </div>
       </section>

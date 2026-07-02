@@ -11,7 +11,7 @@ const BeliefSection = ({ items }) => {
 
     return (
         <section
-            className="flex flex-col md:flex-row items-center gap-10 md:gap-0 px-8 md:px-16 py-16"
+            className="flex flex-col md:flex-row items-center gap-10 md:gap-0 px-4 md:px-16 py-16"
             style={{ backgroundColor: "#C8D9B0" }}
         >
             {/* LEFT — 40% — "What we Believe in" heading */}
