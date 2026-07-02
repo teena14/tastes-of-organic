@@ -957,15 +957,7 @@ const Product = () => {
 
         {/* ── Reviews section ── */}
         <div style={{ marginTop: "60px" }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "minmax(0,1fr) minmax(0,1.6fr)",
-              gap: "40px",
-              alignItems: "start",
-            }}
-            className="reviews-grid"
-          >
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.6fr] gap-10 items-start">
             {/* Rating breakdown */}
             <div>
               <h2
@@ -1071,17 +1063,7 @@ const Product = () => {
         </div>
       </div>
 
-      {/* ── Responsive styles ── */}
-      <style>{`
-        @media (max-width: 700px) {
-          .product-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .reviews-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
+
     </div>
   );
 };

@@ -140,7 +140,7 @@ const Subscription = () => {
 
       {/* ══════════════════ PLAN CARDS ══════════════════ */}
       <div style={{ maxWidth: "860px", margin: "0 auto", padding: "32px 16px 0" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "14px" }}>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
           {PLANS.map((plan) => {
             const active = selectedPlan === plan.months;
             return (
@@ -184,16 +184,7 @@ const Subscription = () => {
       </div>
 
       {/* ══════════════════ BODY: PRODUCTS + SUMMARY ══════════════════ */}
-      <div
-        style={{
-          maxWidth: "1100px",
-          margin: "0 auto",
-          padding: "28px 16px 48px",
-          display: "flex",
-          gap: "20px",
-          alignItems: "flex-start",
-        }}
-      >
+      <div className="max-w-[1100px] mx-auto px-4 py-7 md:py-12 flex flex-col-reverse md:flex-row gap-5 items-start">
         {/* ─── LEFT: product browser ─── */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <h2 style={{ fontSize: "20px", fontWeight: 700, color: "#222", marginBottom: "14px", marginTop: 0 }}>
@@ -284,7 +275,7 @@ const Subscription = () => {
 
           {/* Product grid */}
           {loading ? (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "12px" }}>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {[...Array(8)].map((_, i) => (
                 <div
                   key={i}
@@ -321,7 +312,7 @@ const Subscription = () => {
               <p style={{ fontSize: "13px" }}>Try adjusting your search or category.</p>
             </div>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "12px" }}>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {displayed.map((p) => {
                 const cartItem = items.find((i) => i.product._id === p._id);
                 return (
@@ -344,18 +335,7 @@ const Subscription = () => {
         </div>
 
         {/* ─── RIGHT: Summary sidebar ─── */}
-        <div
-          style={{
-            width: "240px",
-            flexShrink: 0,
-            backgroundColor: "#fff",
-            borderRadius: "12px",
-            border: "1px solid #D4E6C8",
-            padding: "18px",
-            position: "sticky",
-            top: "80px",
-          }}
-        >
+        <div className="w-full md:w-[240px] shrink-0 bg-white rounded-xl border p-4 relative md:sticky md:top-20" style={{ borderColor: "#D4E6C8" }}>
           <h3
             style={{
               fontSize: "16px",

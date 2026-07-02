@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 /* ─── Single inline-editable field ─────────────────────────────── */
-const InlineField = ({ label, name, value, type = "text", options, onSave }) => {
+const InlineField = ({ icon: Icon, label, name, value, type = "text", options, onSave }) => {
     const [editing, setEditing] = useState(false);
     const [draft, setDraft] = useState(value);
     const [prevValue, setPrevValue] = useState(value);
@@ -46,31 +46,41 @@ const InlineField = ({ label, name, value, type = "text", options, onSave }) => 
                 {/* Value / Input */}
                 <div className="flex-1 min-w-0">
                     {options ? (
-                        <select
-                            ref={inputRef}
-                            name={name}
-                            value={draft}
-                            disabled={!editing}
-                            onChange={(e) => setDraft(e.target.value)}
-                            onKeyDown={handleKey}
-                            className="w-full bg-transparent outline-none text-sm text-gray-700 disabled:text-gray-500"
-                            style={{ fontFamily: "Poppins, sans-serif", cursor: editing ? "pointer" : "default" }}
-                        >
-                            {options.map((o) => <option key={o} value={o}>{o}</option>)}
-                        </select>
+                        !editing ? (
+                            <div className="text-sm text-gray-700 break-words" style={{ fontFamily: "Poppins, sans-serif" }}>
+                                {draft || "—"}
+                            </div>
+                        ) : (
+                            <select
+                                ref={inputRef}
+                                name={name}
+                                value={draft}
+                                onChange={(e) => setDraft(e.target.value)}
+                                onKeyDown={handleKey}
+                                className="w-full bg-transparent outline-none text-sm text-gray-700"
+                                style={{ fontFamily: "Poppins, sans-serif", cursor: "pointer" }}
+                            >
+                                {options.map((o) => <option key={o} value={o}>{o}</option>)}
+                            </select>
+                        )
                     ) : (
-                        <input
-                            ref={inputRef}
-                            type={type}
-                            name={name}
-                            value={draft}
-                            readOnly={!editing}
-                            onChange={(e) => setDraft(e.target.value)}
-                            onKeyDown={handleKey}
-                            placeholder={editing ? `Enter ${label.toLowerCase()}` : "—"}
-                            className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder:text-gray-300"
-                            style={{ fontFamily: "Poppins, sans-serif", cursor: editing ? "text" : "default" }}
-                        />
+                        !editing ? (
+                            <div className="text-sm text-gray-700 break-all" style={{ fontFamily: "Poppins, sans-serif" }}>
+                                {draft || "—"}
+                            </div>
+                        ) : (
+                            <input
+                                ref={inputRef}
+                                type={type}
+                                name={name}
+                                value={draft}
+                                onChange={(e) => setDraft(e.target.value)}
+                                onKeyDown={handleKey}
+                                placeholder={`Enter ${label.toLowerCase()}`}
+                                className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder:text-gray-300"
+                                style={{ fontFamily: "Poppins, sans-serif" }}
+                            />
+                        )
                     )}
                 </div>
 
@@ -194,7 +204,7 @@ const Profile = () => {
         >
             {/* ── Hero banner ─────────────────────────────────── */}
             <div
-                className="relative flex flex-col items-center pt-16 pb-32"
+                className="relative flex flex-col items-center pt-16 pb-12"
                 style={{ background: "linear-gradient(135deg,#1B5E20 0%,#2E7D32 50%,#388E3C 100%)" }}
             >
                 {/* Decorative circles */}
@@ -271,21 +281,15 @@ const Profile = () => {
             )}
 
             {/* ── Profile card ─────────────────────────────────── */}
-            <div className="max-w-2xl mx-auto px-4 -mt-20 pb-16">
+            <div className="relative z-10 max-w-2xl mx-auto px-4 mt-8 pb-16">
                 <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
-                    <div className="px-8 pt-8 pb-2">
-                        <h2 className="text-lg font-semibold text-gray-800">Personal Information</h2>
-                        <p className="text-xs text-gray-400 mt-0.5">Click the pencil icon on any field to edit it</p>
-                    </div>
-
-                    <div className="px-8 pb-8 grid gap-5 mt-4">
-                        <hr style={{ borderColor: "#F0F0F0" }} />
+                    <div className="px-8 pb-8 pt-8 grid gap-5">
                         <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest -mb-2">Basic Info</p>
 
                         <InlineField icon={User}     label="Full Name"       name="name"     value={profile.name}   onSave={handleSave} />
                         <InlineField icon={Mail}     label="Email Address"   name="email"    value={profile.email}  type="email" onSave={handleSave} />
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <InlineField icon={Phone}    label="Phone Number"    name="phone" value={profile.phone} type="tel"  onSave={handleSave} />
                             <InlineField icon={Calendar} label="Date of Birth"   name="dob"   value={profile.dob}   type="date" onSave={handleSave} />
                         </div>
@@ -301,7 +305,7 @@ const Profile = () => {
                         <InlineField icon={Home}    label="Address Line 1" name="addressLine1" value={profile.addressLine1} onSave={handleSave} />
                         <InlineField icon={MapPin}  label="Address Line 2" name="addressLine2" value={profile.addressLine2} onSave={handleSave} />
 
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <InlineField icon={MapPin}       label="City"    name="city"    value={profile.city}    onSave={handleSave} />
                             <InlineField icon={MapPin}       label="State"   name="state"   value={profile.state}   onSave={handleSave} />
                             <InlineField icon={CheckCircle}  label="Pincode" name="pincode" value={profile.pincode} onSave={handleSave} />

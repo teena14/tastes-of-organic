@@ -28,29 +28,22 @@ const SectionHeading = ({ children }) => (
    Row 2:  [Card C — col 1]   [Card D — col 2+3]
 ───────────────────────────────────────────── */
 const ConcernGrid = () => (
-  <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr 1fr",
-      gridTemplateRows: "auto auto",
-      gap: "20px",
-    }}
-  >
-    {/* Row 1 — Card A: spans first 2 columns */}
-    <div style={{ gridColumn: "1 / 3" }}>
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+    {/* Row 1 — Card A: spans first 2 columns on tablet/desktop */}
+    <div className="md:col-span-2">
       <ConcernCard label={"Diabetes\nFriendly"} color="green" to="/shop?concern=diabetes" bgUrl="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&q=80&w=800" />
     </div>
     {/* Row 1 — Card B: spans last column */}
-    <div style={{ gridColumn: "3 / 4" }}>
+    <div className="md:col-span-1">
       <ConcernCard label={"Heart\nHealthy"} color="yellow" to="/shop?concern=heart" bgUrl="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=600" />
     </div>
 
     {/* Row 2 — Card C: spans first column */}
-    <div style={{ gridColumn: "1 / 2" }}>
+    <div className="md:col-span-1">
       <ConcernCard label={"Immunity\nBooster"} color="green" to="/shop?concern=immunity" bgUrl="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&q=80&w=600" />
     </div>
     {/* Row 2 — Card D: spans last 2 columns */}
-    <div style={{ gridColumn: "2 / 4" }}>
+    <div className="md:col-span-2">
       <ConcernCard label={"High\nProtein"} color="yellow" to="/shop?concern=protein" bgUrl="https://images.unsplash.com/photo-1515543237350-b3eea1ec8082?auto=format&fit=crop&q=80&w=800" />
     </div>
   </div>

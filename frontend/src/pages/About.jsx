@@ -113,9 +113,8 @@ const OriginSection = () => {
     return (
         <section
             ref={ref}
+            className="max-w-[1100px] mx-auto px-6 md:px-10 py-16 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center"
             style={{
-                maxWidth: "1100px", margin: "0 auto", padding: "80px 40px",
-                display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center",
                 opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(30px)",
                 transition: "opacity 0.7s ease, transform 0.7s ease",
             }}
@@ -175,7 +174,7 @@ const OriginSection = () => {
                 </h2>
                 <div style={{ borderLeft: `3px solid ${C.sage}`, paddingLeft: "20px" }}>
                     <p style={{ color: C.muted, lineHeight: 1.85, marginBottom: "16px", marginTop: 0, fontSize: "14px" }}>
-                        It was a cool October morning in 2019 when our founder, Priya, drove up the winding roads
+                        It was a cool October morning in 2019 when our founder, Kabita Devi, drove up the winding roads
                         of Chamoli district. She had gone to visit an old family friend — a farmer named Ramesh ji,
                         whose family had tended the same terraced fields for three generations.
                     </p>
@@ -185,7 +184,7 @@ const OriginSection = () => {
                         smelled of earth and rain. His forest honey crystallised the way real honey should.
                     </p>
                     <p style={{ color: C.muted, lineHeight: 1.85, marginTop: 0, marginBottom: 0, fontSize: "14px" }}>
-                        Priya came back to the city with a car full of produce and a heart full of purpose.
+                        Kabita Devi came back to the city with a car full of produce and a heart full of purpose.
                         She never looked back.
                     </p>
                 </div>
@@ -204,11 +203,7 @@ const StatsSection = () => {
     ];
     return (
         <section style={{ backgroundColor: C.primary, padding: "60px 40px" }}>
-            <div style={{
-                maxWidth: "1100px", margin: "0 auto",
-                display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "24px",
-                textAlign: "center",
-            }}>
+            <div className="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 {stats.map((s, i) => (
                     <div key={i}>
                         <div style={{
@@ -233,9 +228,8 @@ const LandSection = () => {
     return (
         <section
             ref={ref}
+            className="max-w-[1100px] mx-auto px-6 md:px-10 py-16 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center"
             style={{
-                maxWidth: "1100px", margin: "0 auto", padding: "80px 40px",
-                display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center",
                 opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(30px)",
                 transition: "opacity 0.7s ease, transform 0.7s ease",
             }}
@@ -312,9 +306,8 @@ const ProductsSection = () => {
         <section style={{ backgroundColor: C.sageLight, padding: "80px 40px" }}>
             <div
                 ref={ref}
+                className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center"
                 style={{
-                    maxWidth: "1100px", margin: "0 auto",
-                    display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center",
                     opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(30px)",
                     transition: "opacity 0.7s ease, transform 0.7s ease",
                 }}
@@ -462,7 +455,7 @@ const ValuesSection = () => {
                     <div style={{ width: "48px", height: "3px", borderRadius: "999px", backgroundColor: C.primary, margin: "0 auto" }} />
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "28px" }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-7">
                     {values.map((v) => (
                         <div
                             key={v.title}
@@ -552,7 +545,7 @@ const FarmerVoicesSection = () => {
                     </h2>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px" }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                     {voices.map((v) => (
                         <div key={v.name} style={{
                             backgroundColor: "#fff", borderRadius: "16px",
@@ -595,7 +588,7 @@ const FarmerVoicesSection = () => {
 const JourneySection = () => {
     const [ref, visible] = useFadeIn();
     const milestones = [
-        { year: "2019", event: "First trip to Chamoli, Priya meets Ramesh ji and the idea is born." },
+        { year: "2019", event: "First trip to Chamoli, Kabita Devi meets Ramesh ji and the idea is born." },
         { year: "2020", event: "Tastes of Organic launches with 12 products from 8 farming families during the pandemic." },
         { year: "2021", event: "NPOP organic certification received. First subscription box ships to 200 households." },
         { year: "2022", event: "Expanded to 9 districts of Uttarakhand. Farmer cooperative formally established." },
@@ -636,15 +629,10 @@ const JourneySection = () => {
                     }} />
 
                     {milestones.map((m, i) => (
-                        <div key={m.year} style={{
-                            display: "flex",
-                            flexDirection: i % 2 === 0 ? "row" : "row-reverse",
-                            alignItems: "center", marginBottom: "36px", gap: "0",
+                        <div key={m.year} className={`flex flex-col ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} items-center gap-0 mb-9`} style={{
                         }}>
                             {/* Text block */}
-                            <div style={{
-                                flex: 1, padding: i % 2 === 0 ? "0 32px 0 0" : "0 0 0 32px",
-                                textAlign: i % 2 === 0 ? "right" : "left",
+                            <div className={`flex-1 p-0 ${i % 2 === 0 ? "md:pr-8 md:text-right" : "md:pl-8 md:text-left"} text-center`} style={{
                             }}>
                                 <div style={{
                                     backgroundColor: "#fff", borderRadius: "12px",

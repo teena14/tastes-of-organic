@@ -11,11 +11,11 @@ const BeliefSection = ({ items }) => {
 
     return (
         <section
-            className="flex items-center px-8 md:px-16 py-16"
+            className="flex flex-col md:flex-row items-center gap-10 md:gap-0 px-8 md:px-16 py-16"
             style={{ backgroundColor: "#C8D9B0" }}
         >
             {/* LEFT — 40% — "What we Believe in" heading */}
-            <div className="flex items-stretch gap-5 shrink-0" style={{ width: "40%" }}>
+            <div className="flex items-stretch gap-5 shrink-0 w-full md:w-2/5">
                 <div className="w-[3px] rounded-full self-stretch" style={{ backgroundColor: "#1B5E2055" }} />
                 {/* Heading — Abel */}
                 <h2 className="font-abel text-4xl md:text-5xl text-primary leading-tight">
@@ -24,7 +24,7 @@ const BeliefSection = ({ items }) => {
             </div>
 
             {/* RIGHT — 60% — Three belief circles */}
-            <div className="flex items-start justify-around gap-6" style={{ width: "60%" }}>
+            <div className="flex flex-col sm:flex-row items-center sm:items-start justify-around gap-8 sm:gap-6 w-full md:w-3/5">
                 {beliefs.map((item, i) => (
                     <div key={i} className="flex flex-col items-center text-center gap-3" style={{ flex: 1 }}>
                         {/* Circle placeholder */}

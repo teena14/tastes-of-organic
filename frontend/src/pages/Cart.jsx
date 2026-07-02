@@ -210,10 +210,10 @@ const Cart = () => {
         </div>
 
         {/* Layout */}
-        <div style={{ display: "flex", gap: "24px", alignItems: "flex-start", flexWrap: "wrap" }}>
+        <div className="flex flex-col lg:flex-row gap-6 items-start">
 
           {/* ─ Left: Items ─ */}
-          <div style={{ flex: "1 1 520px", display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div className="w-full lg:flex-1 flex flex-col gap-2.5">
             {items.map(item => (
               <CartItem key={`${item.product._id}-${item.size}`} item={item}
                 onIncrease={async () => { await updateCartQuantity(item.product._id, item.size, "increase"); await refresh(); }}
@@ -224,11 +224,9 @@ const Cart = () => {
           </div>
 
           {/* ─ Right: Summary panel ─ */}
-          <div style={{
-            flex: "0 0 310px", background: C.white, borderRadius: "20px",
-            border: `1px solid ${C.border}`, padding: "28px",
-            boxShadow: "0 4px 32px rgba(27,94,32,0.07)",
-            position: "sticky", top: "24px",
+          <div className="w-full lg:w-[310px] bg-white rounded-[20px] border p-7 sticky top-6" style={{
+            borderColor: C.border,
+            boxShadow: "0 4px 32px rgba(27,94,32,0.07)"
           }}>
             {/* Panel heading */}
             <h2 style={{ fontFamily: "Poppins, sans-serif", fontWeight: 700, fontSize: "16px", color: C.text, margin: "0 0 20px" }}>

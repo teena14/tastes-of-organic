@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Search, Heart, ShoppingCart, ChevronDown, User, LogOut, Package, X } from "lucide-react";
+import { Search, Heart, ShoppingCart, ChevronDown, User, LogOut, Package, X, Menu } from "lucide-react";
 import { logout } from "../slices/authSlice";
 import { clearCart } from "../slices/cartSlice";
 import toast from "react-hot-toast";
@@ -16,6 +16,7 @@ const Navbar = () => {
 
     const [searchOpen, setSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const inputRef = useRef(null);
     const searchContainerRef = useRef(null);
 
@@ -82,10 +83,12 @@ const Navbar = () => {
                 className="w-full bg-white/95 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-between px-8 py-3"
                 style={{ maxWidth: "1280px" }}
             >
-                {/* Logo */}
-                <Link to="/">
-                    <img src={logo} alt="Tastes of Organic" className="w-10 h-10 rounded-full object-cover" />
-                </Link>
+                <div className="flex items-center gap-4">
+                    {/* Logo */}
+                    <Link to="/" onClick={() => setMobileMenuOpen(false)}>
+                        <img src={logo} alt="Tastes of Organic" className="w-10 h-10 rounded-full object-cover" />
+                    </Link>
+                </div>
 
                 {/* Nav links — hidden when search is open */}
                 {!searchOpen && (
@@ -139,7 +142,7 @@ const Navbar = () => {
                 )}
 
                 {/* Right icons */}
-                <div className="flex items-center gap-4 text-gray-700">
+                <div className="flex items-center gap-1.5 sm:gap-4 text-gray-700">
                     {/* Search toggle */}
                     <button
                         aria-label={searchOpen ? "Close search" : "Open search"}
@@ -177,7 +180,7 @@ const Navbar = () => {
                             <Link
                                 to="/profile"
                                 aria-label="Profile"
-                                className="flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs transition-all hover:scale-105 hover:shadow-md"
+                                className="hidden md:flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs transition-all hover:scale-105 hover:shadow-md"
                                 style={{ background: "linear-gradient(135deg,#1B5E20,#2E7D32)", color: "#fff" }}
                                 title={user?.name}
                             >
@@ -186,7 +189,7 @@ const Navbar = () => {
                             <button
                                 onClick={handleLogout}
                                 aria-label="Logout"
-                                className="hover:opacity-70 transition-opacity"
+                                className="hidden md:block hover:opacity-70 transition-opacity"
                             >
                                 <LogOut size={17} />
                             </button>
@@ -194,14 +197,57 @@ const Navbar = () => {
                     ) : (
                         <Link
                             to="/login"
-                            className="flex items-center gap-1.5 text-sm font-medium px-4 py-1.5 rounded-full transition-all"
+                            className="hidden md:flex items-center gap-1.5 text-sm font-medium px-4 py-1.5 rounded-full transition-all"
                             style={{ backgroundColor: "#1B5E20", color: "#fff" }}
                         >
                             <User size={14} /> Login
                         </Link>
                     )}
+
+                    {/* Mobile Menu Toggle (Right Side) */}
+                    <button
+                        className="md:hidden text-gray-800 hover:text-[#1B5E20] transition-colors"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        aria-label="Toggle Menu"
+                    >
+                        {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
                 </div>
             </nav>
+
+            {/* Mobile Menu Dropdown */}
+            {mobileMenuOpen && (
+                <div
+                    className="absolute top-[80px] left-6 right-6 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl flex flex-col p-4 z-40 md:hidden border"
+                    style={{ borderColor: "#EBEBEB", fontFamily: "Poppins, sans-serif" }}
+                >
+                    <Link to="/shop" onClick={() => setMobileMenuOpen(false)} className="py-3 px-4 font-medium text-gray-800 hover:bg-[#F0F7EB] rounded-xl transition-colors">Shop</Link>
+                    <Link to="/blog" onClick={() => setMobileMenuOpen(false)} className="py-3 px-4 font-medium text-gray-800 hover:bg-[#F0F7EB] rounded-xl transition-colors">Blogs</Link>
+                    <Link to="/about" onClick={() => setMobileMenuOpen(false)} className="py-3 px-4 font-medium text-gray-800 hover:bg-[#F0F7EB] rounded-xl transition-colors">About us</Link>
+                    <Link to="/combos" onClick={() => setMobileMenuOpen(false)} className="py-3 px-4 font-medium text-gray-800 hover:bg-[#F0F7EB] rounded-xl transition-colors">Combos</Link>
+                    <Link to="/subscription" onClick={() => setMobileMenuOpen(false)} className="py-3 px-4 font-medium text-gray-800 hover:bg-[#F0F7EB] rounded-xl transition-colors">Subscription</Link>
+
+                    <hr className="my-2 mx-2 border-gray-200" />
+
+                    {isAuthenticated ? (
+                        <>
+                            <Link to="/profile" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 py-3 px-4 font-medium text-gray-800 hover:bg-[#F0F7EB] rounded-xl transition-colors">
+                                <User size={18} /> Profile
+                            </Link>
+                            <Link to="/orders" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 py-3 px-4 font-medium text-gray-800 hover:bg-[#F0F7EB] rounded-xl transition-colors sm:hidden">
+                                <Package size={18} /> Orders
+                            </Link>
+                            <button onClick={() => { setMobileMenuOpen(false); handleLogout(); }} className="flex items-center gap-2 py-3 px-4 font-medium text-red-600 hover:bg-red-50 rounded-xl transition-colors w-full text-left">
+                                <LogOut size={18} /> Logout
+                            </button>
+                        </>
+                    ) : (
+                        <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 py-3 px-4 font-medium text-gray-800 hover:bg-[#F0F7EB] rounded-xl transition-colors">
+                            <User size={18} /> Login
+                        </Link>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

@@ -192,15 +192,15 @@ const Checkout = () => {
         </div>
 
         {/* Two-column layout */}
-        <div style={{ display: "flex", gap: "24px", alignItems: "flex-start", flexWrap: "wrap" }}>
+        <div className="flex flex-col lg:flex-row gap-6 items-start">
 
           {/* ─ Left: Shipping form ─ */}
-          <div style={{ flex: "1 1 440px" }}>
+          <div className="w-full lg:flex-1">
             <Card>
               <CardHeader icon="🏠" title="Shipping Details" subtitle="Where should we deliver your order?" />
               <div style={{ padding: "24px 28px 28px" }}>
                 {/* Form grid — full rows + responsive halves */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {FIELDS.map(field => (
                     <div key={field.key} style={{ gridColumn: field.col === "full" ? "1 / -1" : "auto" }}>
                       <FormInput field={field} value={form[field.key]} onChange={handleChange} />
@@ -212,7 +212,7 @@ const Checkout = () => {
           </div>
 
           {/* ─ Right: Order review + Pay ─ */}
-          <div style={{ flex: "0 0 308px", display: "flex", flexDirection: "column", gap: "20px", position: "sticky", top: "24px" }}>
+          <div className="w-full lg:w-[308px] flex flex-col gap-5 sticky top-6">
 
             {/* Order review card */}
             <Card>
