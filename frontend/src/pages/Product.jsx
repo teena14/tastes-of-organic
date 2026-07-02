@@ -435,12 +435,7 @@ const ReviewCard = ({ review }) => (
 );
 
 /* ─── Product Page ───────────────────────────────────────── */
-const WEIGHT_VARIANTS = [
-  { label: "250 gm", price: 250 },
-  { label: "500 gm", price: 500 },
-  { label: "1000 gm", price: 500 },
-  { label: "150 gm", price: 500 },
-];
+
 
 /* Static review image placeholders (real products would have these) */
 const REVIEW_IMAGE_COLORS = ["#C8D9B0", "#D4E6C8", "#A5D6A7", "#81C784", "#66BB6A"];
@@ -471,7 +466,7 @@ const Product = () => {
       return;
     }
     try {
-      for (let i = 0; i < qty; i++) await addToCart(product._id);
+      for (let i = 0; i < qty; i++) await addToCart(product._id, product.sizes?.[selectedVariant]?.size);
       const data = await getCart();
       if (data) dispatch(setCart(data));
       toast.success("Added to cart! 🛒");
@@ -486,7 +481,7 @@ const Product = () => {
       return;
     }
     try {
-      for (let i = 0; i < qty; i++) await addToCart(product._id);
+      for (let i = 0; i < qty; i++) await addToCart(product._id, product.sizes?.[selectedVariant]?.size);
       const data = await getCart();
       if (data) dispatch(setCart(data));
       navigate("/checkout");
@@ -578,7 +573,7 @@ const Product = () => {
   const rating = product.rating || 4.2;
   const reviewCount = product.reviewCount || 30;
   const discount =
-    product.mrp > product.price
+    displayMrp > displayPrice
       ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
       : 0;
 
@@ -696,10 +691,10 @@ const Product = () => {
                     color: "#1B5E20",
                   }}
                 >
-                  ₹{product.price}
+                  ₹{displayPrice}
                 </span>
                 {product.mrp > product.price && (
-                  <s style={{ fontSize: "15px", color: "#BDBDBD" }}>₹{product.mrp}</s>
+                  <s style={{ fontSize: "15px", color: "#BDBDBD" }}>₹{displayMrp}</s>
                 )}
                 {discount > 0 && (
                   <span
@@ -808,7 +803,7 @@ const Product = () => {
             {/* Weight variants */}
             <div style={{ marginBottom: "20px" }}>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                {WEIGHT_VARIANTS.map((v, i) => (
+                {(product.sizes || []).map((v, i) => (
                   <button
                     key={i}
                     onClick={() => setSelectedVariant(i)}
@@ -823,7 +818,7 @@ const Product = () => {
                     }}
                   >
                     <p style={{ fontSize: "11px", fontWeight: 600, color: selectedVariant === i ? "#1B5E20" : "#555", margin: 0 }}>
-                      {v.label}
+                      {v.size}
                     </p>
                     <p style={{ fontSize: "10px", color: "#888", margin: 0 }}>
                       ₹ {v.price}

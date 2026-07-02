@@ -44,6 +44,14 @@ const productSchema = new mongoose.Schema(
     comboItems: [{ type: String }],
     comboCategories: [{ type: String }],
 
+    sizes: [
+      {
+        size: { type: String, required: true },
+        price: { type: Number, required: true },
+        mrp: { type: Number, default: 0 }
+      }
+    ],
+
     stock: {
       type: Number,
       default: 0
@@ -74,6 +82,11 @@ const productSchema = new mongoose.Schema(
     isFeatured: {
       type: Boolean,
       default: false
+    },
+
+    concern: {
+      type: String,
+      default: ""
     }
   },
   { timestamps: true }

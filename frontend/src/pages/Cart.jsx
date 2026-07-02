@@ -74,6 +74,9 @@ const CartItem = ({ item, onDecrease, onIncrease, onRemove }) => {
   const withLoad = async (fn) => { setQtyLoading(true); await fn(); setQtyLoading(false); };
   const handleRemove = async () => { setRemoving(true); await onRemove(); };
 
+  const variant = item.product.sizes?.find(v => v.size === item.size);
+  const displayPrice = variant ? variant.price : item.product.price;
+
   return (
     <div style={{
       display: "flex", alignItems: "center", gap: "18px",
@@ -100,10 +103,10 @@ const CartItem = ({ item, onDecrease, onIncrease, onRemove }) => {
       <div style={{ flex: 1, minWidth: 0 }}>
         <Link to={`/product/${item.product._id}`}
           style={{ fontFamily: "Poppins, sans-serif", fontWeight: 600, fontSize: "14px", color: C.text, textDecoration: "none", display: "block", marginBottom: "4px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-          {item.product.name}
+          {item.product.name} {item.size && `(${item.size})`}
         </Link>
         <p style={{ margin: 0, fontFamily: "Poppins, sans-serif", fontSize: "13px", color: C.textSecondary }}>
-          ₹{item.product.price?.toLocaleString("en-IN")} &nbsp;/&nbsp; unit
+          ₹{displayPrice?.toLocaleString("en-IN")} &nbsp;/&nbsp; unit
         </p>
       </div>
 
@@ -115,7 +118,7 @@ const CartItem = ({ item, onDecrease, onIncrease, onRemove }) => {
       {/* Line total */}
       <div style={{ minWidth: "80px", textAlign: "right" }}>
         <p style={{ margin: 0, fontFamily: "Poppins, sans-serif", fontWeight: 700, fontSize: "15px", color: C.primary }}>
-          ₹{(item.product.price * item.quantity)?.toLocaleString("en-IN")}
+          ₹{(displayPrice * item.quantity)?.toLocaleString("en-IN")}
         </p>
       </div>
 
@@ -212,10 +215,10 @@ const Cart = () => {
           {/* ─ Left: Items ─ */}
           <div style={{ flex: "1 1 520px", display: "flex", flexDirection: "column", gap: "10px" }}>
             {items.map(item => (
-              <CartItem key={item.product._id} item={item}
-                onIncrease={async () => { await updateCartQuantity(item.product._id, "increase"); await refresh(); }}
-                onDecrease={async () => { await updateCartQuantity(item.product._id, "decrease"); await refresh(); }}
-                onRemove={async () => { await removeFromCart(item.product._id); await refresh(); toast.success("Item removed from cart"); }}
+              <CartItem key={`${item.product._id}-${item.size}`} item={item}
+                onIncrease={async () => { await updateCartQuantity(item.product._id, item.size, "increase"); await refresh(); }}
+                onDecrease={async () => { await updateCartQuantity(item.product._id, item.size, "decrease"); await refresh(); }}
+                onRemove={async () => { await removeFromCart(item.product._id, item.size); await refresh(); toast.success("Item removed from cart"); }}
               />
             ))}
           </div>

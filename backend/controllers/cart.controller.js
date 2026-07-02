@@ -3,7 +3,7 @@ import User from "../models/User.js";
 export const addToCart = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { productId } = req.body;
+    const { productId, size } = req.body;
 
     const user = await User.findById(userId);
 
@@ -12,7 +12,7 @@ export const addToCart = async (req, res) => {
     }
 
     const existingItem = user.cart.find(
-      item => item.product.toString() === productId
+      item => item.product.toString() === productId && item.size === size
     );
 
     if (existingItem) {
@@ -20,6 +20,7 @@ export const addToCart = async (req, res) => {
     } else {
       user.cart.push({
         product: productId,
+        size,
         quantity: 1
       });
     }
@@ -40,7 +41,7 @@ export const addToCart = async (req, res) => {
 export const removeFromCart = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { productId } = req.body;
+    const { productId, size } = req.body;
 
     const user = await User.findById(userId);
 
@@ -49,7 +50,7 @@ export const removeFromCart = async (req, res) => {
     }
 
     user.cart = user.cart.filter(
-      item => item.product.toString() !== productId
+      item => !(item.product.toString() === productId && item.size === size)
     );
 
     await user.save();
@@ -79,9 +80,14 @@ export const getCart = async (req, res) => {
     let totalItems = 0;
 
     user.cart.forEach(item => {
-      subtotal += item.product.price * item.quantity;
+      if (!item.product) return;
+      const variant = item.product.sizes?.find(v => v.size === item.size);
+      const itemPrice = variant ? variant.price : item.product.price;
+      subtotal += itemPrice * item.quantity;
       totalItems += item.quantity;
     });
+
+    user.cart = user.cart.filter(item => item.product);
 
     let delivery = subtotal >= 500 || subtotal === 0 ? 0 : 50;
 
@@ -107,7 +113,7 @@ export const getCart = async (req, res) => {
 export const updateCartQuantity = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { productId, action } = req.body;
+    const { productId, size, action } = req.body;
 
     const user = await User.findById(userId);
 
@@ -116,7 +122,7 @@ export const updateCartQuantity = async (req, res) => {
     }
 
     const item = user.cart.find(
-      item => item.product.toString() === productId
+      item => item.product.toString() === productId && item.size === size
     );
 
     if (!item) {
@@ -132,7 +138,7 @@ export const updateCartQuantity = async (req, res) => {
 
       if (item.quantity <= 0) {
         user.cart = user.cart.filter(
-          i => i.product.toString() !== productId
+          i => !(i.product.toString() === productId && i.size === size)
         );
       }
     }

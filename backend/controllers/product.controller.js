@@ -2,7 +2,7 @@ import Product from "../models/Product.js";
 
 export const getProducts = async (req, res) => {
   try {
-    const { search, category, sort, featured } = req.query;
+    const { search, category, concern, sort, featured } = req.query;
 
     const query = {};
 
@@ -16,6 +16,11 @@ export const getProducts = async (req, res) => {
         { category: { $in: categories } },
         { category: "COMBOS", comboCategories: { $in: categories } }
       ];
+    }
+
+    if (concern && concern !== "ALL") {
+      const concerns = concern.split(',').map(c => c.trim().toLowerCase());
+      query.concern = { $in: concerns };
     }
 
     if (featured === "true") {

@@ -11,6 +11,13 @@ export const SHOP_CATEGORIES = [
   { id: "COMBOS", label: "Combos" }
 ];
 
+export const SHOP_CONCERNS = [
+  { id: "diabetes", label: "Diabetes Friendly" },
+  { id: "heart", label: "Heart Healthy" },
+  { id: "immunity", label: "Immunity Booster" },
+  { id: "protein", label: "High Protein" }
+];
+
 export const SUBSCRIPTION_CATEGORIES = [
   "All", "Honey", "Pulses", "Flour", "Millet", "Juices", "Spices", "Combos"
 ];

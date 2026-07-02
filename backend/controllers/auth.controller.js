@@ -22,11 +22,11 @@ const transporter = nodemailer.createTransport({
 // Verify connection on startup — logs a clear error if credentials are wrong
 transporter.verify((error) => {
   if (error) {
-    console.error("❌ Email transporter error:", error.message);
-    console.error("👉 Gmail requires a 16-char App Password (not your regular password).");
+    console.error("Email transporter error:", error.message);
+    console.error("Gmail requires a 16-char App Password (not your regular password).");
     console.error("   Go to: Google Account → Security → 2-Step Verification → App Passwords");
   } else {
-    console.log("✅ Email transporter ready");
+    console.log("Email transporter ready");
   }
 });
 

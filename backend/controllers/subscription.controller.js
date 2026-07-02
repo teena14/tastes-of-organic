@@ -37,8 +37,11 @@ export const createSubscription = async (req, res) => {
                 return res.status(400).json({ message: `Insufficient stock for ${product.name}` });
             if (!product.isSubscriptionAllowed)
                 return res.status(400).json({ message: `${product.name} is not available for subscription` });
-            monthlyTotal += product.price * item.quantity;
-            enrichedProducts.push({ product: product._id, quantity: item.quantity });
+            const variant = product.sizes?.find(v => v.size === item.size);
+            const itemPrice = variant ? variant.price : product.price;
+
+            monthlyTotal += itemPrice * item.quantity;
+            enrichedProducts.push({ product: product._id, size: item.size, quantity: item.quantity });
         }
 
         const discountedMonthly = monthlyTotal * (1 - discountPercent / 100);

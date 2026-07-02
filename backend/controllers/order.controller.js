@@ -30,13 +30,17 @@ export const placeOrder = async (req, res) => {
     let subtotal = 0;
 
     const orderItems = user.cart.map(item => {
-      subtotal += item.product.price * item.quantity;
+      const variant = item.product.sizes?.find(v => v.size === item.size);
+      const itemPrice = variant ? variant.price : item.product.price;
+      
+      subtotal += itemPrice * item.quantity;
 
       return {
         product: item.product._id,
         name: item.product.name,
         image: item.product.images?.[0] || "",
-        price: item.product.price,
+        price: itemPrice,
+        size: item.size,
         quantity: item.quantity
       };
     });

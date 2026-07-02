@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { Heart } from "lucide-react";
 import { getWishlist, removeFromWishlist } from "../services/apiClient";
 import { addToCart, getCart } from "../services/apiClient";
 import { setWishlist, removeFromWishlistLocal } from "../slices/wishlistSlice";
@@ -199,22 +200,25 @@ const WishlistCard = ({ product, onRemove, onAddToCart }) => {
               position: "absolute",
               top: "10px",
               right: "10px",
-              width: "32px",
-              height: "32px",
+              width: "36px",
+              height: "36px",
               borderRadius: "50%",
               border: `1.5px solid ${removeHov ? C.redLight : "transparent"}`,
-              background: removeHov ? C.redBg : "rgba(255,255,255,0.88)",
+              background: removeHov ? C.redBg : "rgba(255,255,255,0.95)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: removing ? "not-allowed" : "pointer",
-              fontSize: "14px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
               transition: "all 0.15s ease",
               backdropFilter: "blur(4px)",
             }}
           >
-            {removing ? "…" : "♡"}
+            {removing ? (
+              <span style={{ fontSize: "14px" }}>…</span>
+            ) : (
+              <Heart size={18} color={C.red} fill={C.red} />
+            )}
           </button>
         </div>
       </Link>

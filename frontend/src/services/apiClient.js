@@ -17,9 +17,9 @@ export const googleAuthApi = async (token) => {
 };
 
 // --- cartApi.js ---
-export const addToCart = async (productId) => {
+export const addToCart = async (productId, size) => {
   const res = await api.post("/cart/add", {
-    productId
+    productId, size
   });
   return res.data;
 };
@@ -29,18 +29,19 @@ export const getCart = async () => {
   return res.data.data;
 };
 
-export const updateCartQuantity = async (productId, action) => {
+export const updateCartQuantity = async (productId, size, action) => {
   const res = await api.post("/cart/update", {
     productId,
+    size,
     action
   });
 
   return res.data;
 };
 
-export const removeFromCart = async (productId) => {
+export const removeFromCart = async (productId, size) => {
   const res = await api.post("/cart/remove", {
-    productId
+    productId, size
   });
 
   return res.data;
@@ -73,10 +74,11 @@ export const checkPaymentStatus = (orderId) =>
     api.get(`/payment/status/${orderId}`).then(r => r.data);
 
 // --- productApi.js ---
-export const fetchProducts = async ({ search, category, sort, featured } = {}) => {
+export const fetchProducts = async ({ search, category, concern, sort, featured } = {}) => {
   const params = {};
   if (search) params.search = search;
   if (category && category !== "ALL") params.category = category;
+  if (concern && concern !== "ALL") params.concern = concern;
   if (sort) params.sort = sort;
   if (featured) params.featured = "true";
   const response = await api.get("/products", { params });

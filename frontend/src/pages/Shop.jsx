@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { SlidersHorizontal, Search, ChevronDown, X } from "lucide-react";
 import { fetchProducts } from "../services/apiClient";
 import ProductCard from "../components/ProductCard";
-import { SHOP_CATEGORIES as CATEGORIES, SORT_OPTIONS } from "../constants";
+import { SHOP_CATEGORIES as CATEGORIES, SHOP_CONCERNS as CONCERNS, SORT_OPTIONS } from "../constants";
 
 /* ─── Skeleton card ─────────────────────────────────────── */
 const SkeletonCard = () => (
@@ -70,7 +70,7 @@ const PriceSlider = ({ min, max, value, onChange }) => {
 };
 
 /* ─── Sidebar ────────────────────────────────────────────── */
-const Sidebar = ({ category, setCategory, availability, setAvailability, priceRange, setPriceRange }) => {
+const Sidebar = ({ category, setCategory, concern, setConcern, availability, setAvailability, priceRange, setPriceRange }) => {
   const SectionTitle = ({ children, defaultOpen = true }) => {
     const [open, setOpen] = useState(defaultOpen);
     return (
@@ -147,6 +147,79 @@ const Sidebar = ({ category, setCategory, availability, setAvailability, priceRa
               </label>
             );
           })}
+          {category !== "ALL" && (
+            <button 
+              onClick={() => setCategory("ALL")}
+              className="text-xs text-[#1B5E20] hover:underline mt-2 inline-block"
+            >
+              Clear selection
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Divider */}
+      <hr style={{ borderColor: "#D4E6C8", marginBottom: "20px" }} />
+
+      {/* Concern */}
+      <div className="mb-6">
+        <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "#1B5E20" }}>
+          Concern
+        </p>
+        <div className="space-y-2">
+          {CONCERNS.map((con) => {
+            const isChecked = concern === "ALL" ? con.id === "ALL" : concern.split(",").includes(con.id);
+            return (
+              <label key={con.id} className="flex items-center gap-2.5 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  name="concern"
+                  checked={isChecked}
+                  onChange={() => {
+                    if (con.id === "ALL") {
+                      setConcern("ALL");
+                    } else {
+                      let current = concern === "ALL" ? [] : concern.split(",").filter(Boolean);
+                      if (current.includes(con.id)) {
+                        current = current.filter(c => c !== con.id);
+                      } else {
+                        current.push(con.id);
+                      }
+                      setConcern(current.length ? current.join(",") : "ALL");
+                    }
+                  }}
+                  className="hidden"
+                />
+                <span
+                  className="w-4 h-4 rounded-sm border-2 flex items-center justify-center transition-all"
+                  style={{
+                    borderColor: isChecked ? "#1B5E20" : "#BDBDBD",
+                    backgroundColor: isChecked ? "#1B5E20" : "transparent",
+                  }}
+                >
+                  {isChecked && (
+                    <svg viewBox="0 0 10 8" width="8" height="8" fill="none">
+                      <path d="M1 4l3 3 5-6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </span>
+                <span
+                  className="text-sm transition-colors"
+                  style={{ color: isChecked ? "#1B5E20" : "#555", fontWeight: isChecked ? 500 : 400 }}
+                >
+                  {con.label}
+                </span>
+              </label>
+            );
+          })}
+          {concern !== "ALL" && (
+            <button 
+              onClick={() => setConcern("ALL")}
+              className="text-xs text-[#1B5E20] hover:underline mt-2 inline-block"
+            >
+              Clear selection
+            </button>
+          )}
         </div>
       </div>
 
@@ -210,6 +283,7 @@ const Shop = () => {
   const [fetchError, setFetchError] = useState(false);
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [category, setCategory] = useState(searchParams.get("category") || "ALL");
+  const [concern, setConcern] = useState(searchParams.get("concern") || "ALL");
   const [sort, setSort] = useState("newest");
   const [availability, setAvailability] = useState("");
   const [priceRange, setPriceRange] = useState([0, 2000]);
@@ -219,7 +293,7 @@ const Shop = () => {
     try {
       setLoading(true);
       setFetchError(false);
-      const result = await fetchProducts({ search, category, sort });
+      const result = await fetchProducts({ search, category, concern, sort });
       setProducts(result.data || []);
     } catch {
       setProducts([]);
@@ -227,7 +301,7 @@ const Shop = () => {
     } finally {
       setLoading(false);
     }
-  }, [search, category, sort]);
+  }, [search, category, concern, sort]);
 
   useEffect(() => {
     loadProducts();
@@ -238,8 +312,10 @@ const Shop = () => {
   useEffect(() => {
     const urlSearch = searchParams.get("search") || "";
     const urlCategory = searchParams.get("category") || "ALL";
+    const urlConcern = searchParams.get("concern") || "ALL";
     setSearch(urlSearch);
     setCategory(urlCategory);
+    setConcern(urlConcern);
   }, [searchParams]);
 
   // sync local state back to URL params
@@ -247,8 +323,9 @@ const Shop = () => {
     const params = {};
     if (search) params.search = search;
     if (category && category !== "ALL") params.category = category;
+    if (concern && concern !== "ALL") params.concern = concern;
     setSearchParams(params, { replace: true });
-  }, [search, category, setSearchParams]);
+  }, [search, category, concern, setSearchParams]);
 
   // client-side price filter and hide combos from ALL category
   const displayed = products.filter((p) => {
@@ -257,12 +334,14 @@ const Shop = () => {
 
   const activeFiltersCount = [
     category !== "ALL",
+    concern !== "ALL",
     availability !== "",
     priceRange[0] > 0 || priceRange[1] < 2000,
   ].filter(Boolean).length;
 
   const clearFilters = () => {
     setCategory("ALL");
+    setConcern("ALL");
     setAvailability("");
     setPriceRange([0, 2000]);
     setSearch("");
@@ -378,6 +457,8 @@ const Shop = () => {
             <Sidebar
               category={category}
               setCategory={setCategory}
+              concern={concern}
+              setConcern={setConcern}
               availability={availability}
               setAvailability={setAvailability}
               priceRange={priceRange}
@@ -401,6 +482,8 @@ const Shop = () => {
                 <Sidebar
                   category={category}
                   setCategory={setCategory}
+                  concern={concern}
+                  setConcern={setConcern}
                   availability={availability}
                   setAvailability={setAvailability}
                   priceRange={priceRange}

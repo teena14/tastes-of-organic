@@ -1,8 +1,10 @@
+import { useEffect, useState } from "react";
 import Hero from "../components/Hero";
 import CategoryBar from "../components/CategoryBar";
 import ProductCard from "../components/ProductCard";
 import ConcernCard from "../components/ConcernCard";
 import BeliefSection from "../components/BeliefSection";
+import { fetchProducts } from "../services/apiClient";
 
 const MOCK_PRODUCTS = [
   { _id: "1", name: "Premium Kashmiri Saffron", price: 850, mrp: 1000, images: ["https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=600"], rating: 4.8, reviewCount: 124, sizes: ["1g", "5g"] },
@@ -55,41 +57,70 @@ const ConcernGrid = () => (
 );
 
 /* ── Home page ── */
-const Home = () => (
-  <div className="min-h-screen" style={{ backgroundColor: "#F8F6F0", fontFamily: "Poppins, sans-serif" }}>
+const Home = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
-    {/* 1. Hero + floating navbar */}
-    <Hero />
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        setFetchError(false);
+        const result = await fetchProducts({});
+        setProducts(result.data || []);
+      } catch {
+        setProducts([]);
+        setFetchError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    {/* 2. Category bar overlapping hero bottom edge */}
-    <CategoryBar />
+    loadProducts();
+  }, []);
 
-    {/* 3. First product grid */}
-    <section className="px-8 md:px-16 py-14 mt-8">
-      <SectionHeading>Our Products</SectionHeading>
-      <div className="grid grid-cols-4 gap-6">
-        {MOCK_PRODUCTS.map((prod) => <ProductCard key={prod._id} product={prod} />)}
-      </div>
-    </section>
+  const displayProducts = products.slice(0, 4);
+  const placeholderCards = Array.from({ length: 4 }, (_, index) => (
+    <ProductCard key={`placeholder-${index}`} placeholder />
+  ));
 
-    {/* 4. Shop by Concern — asymmetric layout */}
-    <section className="px-8 md:px-16 pb-14">
-      <SectionHeading>Shop by Concern</SectionHeading>
-      <ConcernGrid />
-    </section>
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: "#F8F6F0", fontFamily: "Poppins, sans-serif" }}>
 
-    {/* 5. Second product grid */}
-    <section className="px-8 md:px-16 pb-14">
-      <SectionHeading>Our Products</SectionHeading>
-      <div className="grid grid-cols-4 gap-6">
-        {MOCK_PRODUCTS.map((prod) => <ProductCard key={prod._id} product={prod} />)}
-      </div>
-    </section>
+      {/* 1. Hero + floating navbar */}
+      <Hero />
 
-    {/* 6. What We Believe In — 40/60 split */}
-    <BeliefSection />
+      {/* 2. Category bar overlapping hero bottom edge */}
+      <CategoryBar />
 
-  </div>
-);
+      {/* 3. First product grid */}
+      <section className="px-8 md:px-16 py-14 mt-8">
+        <SectionHeading>Our Products</SectionHeading>
+        <div className="grid grid-cols-4 gap-6">
+          {loading ? placeholderCards : displayProducts.map((prod) => <ProductCard key={prod._id} product={prod} />)}
+        </div>
+      </section>
+
+      {/* 4. Shop by Concern — asymmetric layout */}
+      <section className="px-8 md:px-16 pb-14">
+        <SectionHeading>Shop by Concern</SectionHeading>
+        <ConcernGrid />
+      </section>
+
+      {/* 5. Second product grid */}
+      <section className="px-8 md:px-16 pb-14">
+        <SectionHeading>Our Products</SectionHeading>
+        <div className="grid grid-cols-4 gap-6">
+          {loading ? placeholderCards : displayProducts.map((prod) => <ProductCard key={`second-${prod._id}`} product={prod} />)}
+        </div>
+      </section>
+
+      {/* 6. What We Believe In — 40/60 split */}
+      <BeliefSection />
+
+    </div>
+  );
+};
 
 export default Home;

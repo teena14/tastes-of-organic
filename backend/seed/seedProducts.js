@@ -21,6 +21,8 @@ const products = [
     description:
       "Rare wild-crafted Van Tulsi (forest basil) honey with a distinctively aromatic flavour and calming properties. Collected from remote, pesticide-free forest regions.",
     category: "HONEY",
+    concern: "immunity",
+    sizes: [{size:'250g',price:349,mrp:399},{size:'500g',price:649,mrp:799}],
     price: 649,
     mrp: 799,
     images: [
@@ -36,6 +38,8 @@ const products = [
     description:
       "Multi-floral raw honey harvested from untouched wild forests. Unfiltered, unpasteurised, and rich in natural pollen, enzymes, and antioxidants.",
     category: "HONEY",
+    concern: "immunity",
+    sizes: [{size:'250g',price:349,mrp:399},{size:'500g',price:549,mrp:699}],
     price: 549,
     mrp: 699,
     images: [
@@ -51,6 +55,8 @@ const products = [
     description:
       "Dark, rich honey from Jamun (Indian blackberry) blossoms. Naturally low glycemic index with a bold, fruity sweetness—popular for everyday wellness routines.",
     category: "HONEY",
+    concern: "diabetes",
+    sizes: [{size:'250g',price:349,mrp:399},{size:'500g',price:599,mrp:749}],
     price: 599,
     mrp: 749,
     images: [
@@ -66,6 +72,8 @@ const products = [
     description:
       "Pure forest honey infused with organic Ashwagandha root extract. Supports stress relief, better sleep, and daily vitality—ideal with warm water or milk.",
     category: "HONEY",
+    concern: "immunity",
+    sizes: [{size:'250g',price:399,mrp:499},{size:'500g',price:699,mrp:849}],
     price: 699,
     mrp: 849,
     images: [
@@ -83,6 +91,8 @@ const products = [
     description:
       "Whole organic ragi grains—naturally gluten-free, high in calcium and fibre. Perfect for porridge, rotis, and healthy baking.",
     category: "MILLET",
+    concern: "diabetes",
+    sizes: [{size:'1kg',price:229,mrp:279},{size:'5kg',price:1050,mrp:1200}],
     price: 229,
     mrp: 279,
     images: [
@@ -100,6 +110,8 @@ const products = [
     description:
       "100% organic chakki-ground whole wheat atta. Stone-milled for soft rotis with a natural earthy aroma—no bleach, additives, or preservatives.",
     category: "FLOUR",
+    concern: "heart",
+    sizes: [{size:'1kg',price:279,mrp:329},{size:'5kg',price:1300,mrp:1500}],
     price: 279,
     mrp: 329,
     images: [
@@ -117,6 +129,8 @@ const products = [
     description:
       "Premium split pigeon peas grown without chemicals. High in protein and fibre—ideal for everyday dal, sambar, and comfort meals.",
     category: "PULSES",
+    concern: "protein",
+    sizes: [{size:'500g',price:110,mrp:130},{size:'1kg',price:189,mrp:229}],
     price: 189,
     mrp: 229,
     images: [
@@ -132,6 +146,8 @@ const products = [
     description:
       "Whole black urad dal with the skin intact—rich, earthy flavour and excellent for dals, stews, and traditional Punjabi kali dal recipes.",
     category: "PULSES",
+    concern: "protein",
+    sizes: [{size:'500g',price:100,mrp:120},{size:'1kg',price:199,mrp:249}],
     price: 199,
     mrp: 249,
     images: [
@@ -149,6 +165,8 @@ const products = [
     description:
       "Cold-pressed aloe vera inner-leaf juice. Supports digestion, hydration, and healthy skin—no added sugar or artificial preservatives.",
     category: "JUICES",
+    concern: "immunity",
+    sizes: [{size:'500ml',price:199,mrp:249},{size:'1L',price:349,mrp:399}],
     price: 349,
     mrp: 429,
     images: [
@@ -164,6 +182,8 @@ const products = [
     description:
       "Fresh-pressed Indian gooseberry juice packed with Vitamin C and antioxidants. A tangy daily tonic for immunity and natural energy.",
     category: "JUICES",
+    concern: "immunity",
+    sizes: [{size:'500ml',price:199,mrp:249},{size:'1L',price:349,mrp:399}],
     price: 329,
     mrp: 399,
     images: [
@@ -181,6 +201,8 @@ const products = [
     description:
       "Sun-dried, stone-ground red chilli powder with vibrant colour and balanced heat. Adds depth to curries, pickles, and everyday cooking.",
     category: "SPICES",
+    concern: "",
+    sizes: [{size:'100g',price:90,mrp:110},{size:'250g',price:210,mrp:250}],
     price: 149,
     mrp: 189,
     images: [
@@ -196,6 +218,8 @@ const products = [
     description:
       "High-curcumin organic turmeric powder from single-origin farms. Warm, earthy aroma—essential for curries, golden milk, and daily wellness.",
     category: "SPICES",
+    concern: "immunity",
+    sizes: [{size:'100g',price:90,mrp:110},{size:'250g',price:210,mrp:250}],
     price: 179,
     mrp: 219,
     images: [
@@ -212,6 +236,8 @@ const products = [
     name: "Immunity Booster Combo",
     description: "A perfect blend of Amla Juice and Haldi Powder to boost your daily immunity naturally. Includes 1 bottle of Amla Juice and 1 pack of Haldi Powder.",
     category: "COMBOS",
+    concern: "immunity",
+    sizes: [{size:'Pack',price:1200,mrp:1500}],
     price: Math.round((329 + 179) * 0.9), // 10% discount
     mrp: 399 + 219,
     comboItems: [
@@ -232,6 +258,8 @@ const products = [
     name: "Essential Kitchen Combo",
     description: "Stock up your pantry with organic staples: Wheat Flour (Atta), Toor Dal, and Mirchi Powder. Nutrient-rich and chemical-free.",
     category: "COMBOS",
+    concern: "",
+    sizes: [{size:'Pack',price:850,mrp:999}],
     price: Math.round((279 + 189 + 149) * 0.9), // 10% discount
     mrp: 329 + 229 + 189,
     comboItems: [

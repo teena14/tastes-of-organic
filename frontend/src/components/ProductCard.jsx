@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
@@ -17,6 +18,7 @@ const ProductCard = ({ product, placeholder = false }) => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((s) => s.auth);
   const wishlistIds = useSelector((s) => s.wishlist.productIds);
+  const [selectedVariant, setSelectedVariant] = useState(product?.sizes?.[0] || null);
 
   // ── Placeholder tile for homepage preview grids ──
   if (placeholder || !product) {
@@ -40,15 +42,17 @@ const ProductCard = ({ product, placeholder = false }) => {
   // ── Real product tile ──
   const isWished = wishlistIds.includes(product._id);
   const rating = product.rating || 4;
-  const discount = product.mrp > product.price
-    ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
+  const displayPrice = selectedVariant ? selectedVariant.price : product?.price;
+  const displayMrp = selectedVariant ? selectedVariant.mrp : product?.mrp;
+  const discount = displayMrp > displayPrice
+    ? Math.round(((displayMrp - displayPrice) / displayMrp) * 100)
     : 0;
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) { toast.error("Please login"); return; }
     try {
-      await addToCart(product._id);
+      await addToCart(product._id, selectedVariant?.size);
       const data = await getCart();
       if (data) dispatch(setCart(data));
       toast.success("Added to cart! 🛒");
@@ -301,9 +305,9 @@ const ProductCard = ({ product, placeholder = false }) => {
 
         {/* Price row */}
         <div className="flex items-center gap-2 mt-1">
-          <span className="text-sm font-semibold" style={{ color: "#1B5E20" }}>₹{product.price}</span>
-          {product.mrp > product.price && (
-            <s className="text-xs" style={{ color: "#BDBDBD" }}>₹{product.mrp}</s>
+          <span className="text-sm font-semibold" style={{ color: "#1B5E20" }}>₹{displayPrice}</span>
+          {displayMrp > displayPrice && (
+            <s className="text-xs" style={{ color: "#BDBDBD" }}>₹{displayMrp}</s>
           )}
         </div>
 
@@ -311,12 +315,17 @@ const ProductCard = ({ product, placeholder = false }) => {
         {product.sizes?.length > 0 && (
           <div className="mt-2">
             <select
+              value={selectedVariant?.size || ""}
+              onChange={(e) => {
+                const variant = product.sizes.find(v => v.size === e.target.value);
+                if (variant) setSelectedVariant(variant);
+              }}
               onClick={(e) => e.preventDefault()}
               className="w-full text-xs py-1.5 px-2 rounded border outline-none cursor-pointer"
               style={{ borderColor: "#D4E6C8", color: "#555", backgroundColor: "#F9FBF7" }}
             >
               {product.sizes.map((sz) => (
-                <option key={sz} value={sz}>{sz}</option>
+                <option key={sz.size} value={sz.size}>{sz.size}</option>
               ))}
             </select>
           </div>
@@ -355,7 +364,7 @@ export const SubscriptionProductCard = ({ product, cartItem, onAdd, onIncrease, 
       : 0;
 
   const variantLine = product.sizes?.length
-    ? product.sizes.slice(0, 2).join(", ")
+    ? product.sizes.slice(0, 2).map(s => s.size).join(", ")
     : product.weight
       ? product.weight
       : "";

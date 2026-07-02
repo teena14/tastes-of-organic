@@ -221,7 +221,7 @@ const Checkout = () => {
                 {/* Items */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "16px" }}>
                   {cart.items.map(item => (
-                    <div key={item.product._id} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div key={`${item.product._id}-${item.size}`} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                       <div style={{
                         width: "44px", height: "44px", borderRadius: "10px", flexShrink: 0,
                         background: `linear-gradient(140deg, ${C.sageLight} 0%, ${C.sage} 100%)`,
@@ -233,11 +233,11 @@ const Checkout = () => {
                           : "🌿"}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ margin: 0, fontFamily: "Poppins, sans-serif", fontSize: "13px", fontWeight: 600, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.product.name}</p>
+                        <p style={{ margin: 0, fontFamily: "Poppins, sans-serif", fontSize: "13px", fontWeight: 600, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.product.name} {item.size && `(${item.size})`}</p>
                         <p style={{ margin: 0, fontFamily: "Poppins, sans-serif", fontSize: "12px", color: C.muted }}>Qty: {item.quantity}</p>
                       </div>
                       <span style={{ fontFamily: "Poppins, sans-serif", fontSize: "13px", fontWeight: 700, color: C.primary, flexShrink: 0 }}>
-                        ₹{(item.product.price * item.quantity)?.toLocaleString("en-IN")}
+                        ₹{((item.product.sizes?.find(v => v.size === item.size)?.price || item.product.price) * item.quantity)?.toLocaleString("en-IN")}
                       </span>
                     </div>
                   ))}

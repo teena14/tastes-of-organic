@@ -67,7 +67,7 @@ const Subscription = () => {
     });
 
   /* ── Calculations ── */
-  const monthlyTotal = items.reduce((s, i) => s + i.product.price * i.quantity, 0);
+  const monthlyTotal = items.reduce((s, i) => s + (i.product.sizes?.[0]?.price || i.product.price) * i.quantity, 0);
   const discountPct = selectedPlan ? PLANS.find((p) => p.months === selectedPlan)?.discount ?? 0 : 0;
   const discountedMonthly = monthlyTotal * (1 - discountPct / 100);
   const upfrontTotal = selectedPlan ? discountedMonthly * selectedPlan : 0;
@@ -403,10 +403,10 @@ const Subscription = () => {
 
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: "11px", fontWeight: 600, color: "#333", margin: 0, marginBottom: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {item.product.name}
+                      {item.product.name} {item.product.sizes?.[0] && `(${item.product.sizes[0].size})`}
                     </p>
                     <p style={{ fontSize: "11px", color: "#1B5E20", fontWeight: 700, margin: 0 }}>
-                      Rs {item.product.price}
+                      Rs {item.product.sizes?.[0]?.price || item.product.price}
                     </p>
                   </div>
 
