@@ -1,4 +1,5 @@
 import Product from "../models/Product.js";
+import Review from "../models/Review.js";
 
 export const getProducts = async (req, res) => {
   try {
@@ -64,7 +65,9 @@ export const getProductById = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    return res.json({ success: true, data: product });
+    const reviews = await Review.find({ product: product._id }).populate("user", "name").sort("-createdAt");
+
+    return res.json({ success: true, data: { ...product._doc, reviews } });
   } catch (error) {
     console.error("Get product by id error:", error);
     return res.status(500).json({ message: "Failed to fetch product" });

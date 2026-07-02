@@ -63,57 +63,7 @@ const RatingBar = ({ label, pct, color = "#1B5E20" }) => (
   </div>
 );
 
-/* ─── Static mock review data ───────────────────────────── */
-const MOCK_REVIEWS = [
-  {
-    id: 1,
-    name: "Priya Sharma",
-    rating: 5,
-    title: "Very tasty and pure honey",
-    body: "Lorem ipsum dolor sit amet consectetur. Aliquam tristique nascetur vehicula ac neque. Nunc egestas est orci cursus.",
-    date: "June 15, 2025",
-  },
-  {
-    id: 2,
-    name: "Rahul Verma",
-    rating: 4,
-    title: "Very tasty and pure honey",
-    body: "Lorem ipsum dolor sit amet consectetur. Aliquam tristique nascetur vehicula ac neque. Nunc egestas est orci cursus.",
-    date: "June 15, 2025",
-  },
-  {
-    id: 3,
-    name: "Anita Patel",
-    rating: 4,
-    title: "Very tasty and pure honey",
-    body: "Lorem ipsum dolor sit amet consectetur. Aliquam tristique nascetur vehicula ac neque.",
-    date: "June 15, 2025",
-  },
-  {
-    id: 4,
-    name: "Suresh Kumar",
-    rating: 5,
-    title: "Very tasty and pure honey",
-    body: "Lorem ipsum dolor sit amet consectetur. Aliquam tristique nascetur vehicula ac neque. Nunc egestas est orci cursus.",
-    date: "June 16, 2025",
-  },
-  {
-    id: 5,
-    name: "Meena Joshi",
-    rating: 4,
-    title: "Very tasty and pure honey",
-    body: "Lorem ipsum dolor sit amet consectetur. Aliquam tristique nascetur vehicula ac neque. Nunc egestas est orci cursus.",
-    date: "June 16, 2025",
-  },
-  {
-    id: 6,
-    name: "Vikram Singh",
-    rating: 4,
-    title: "Very tasty and pure honey",
-    body: "Lorem ipsum dolor sit amet consectetur. Aliquam tristique nascetur vehicula ac neque.",
-    date: "June 16, 2025",
-  },
-];
+
 
 /* ─── Pincode Checker ────────────────────────────────────── */
 const PincodeChecker = () => {
@@ -395,7 +345,9 @@ const DescriptionAccordion = ({ description }) => {
 };
 
 /* ─── Review card ─────────────────────────────────────────── */
-const ReviewCard = ({ review }) => (
+const ReviewCard = ({ review }) => {
+  const dateStr = new Date(review.createdAt).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+  return (
   <div
     style={{
       backgroundColor: "#fff",
@@ -420,19 +372,16 @@ const ReviewCard = ({ review }) => (
           {review.rating}/5
         </span>
       </div>
-      <span style={{ fontSize: "11px", color: "#9CA3AF" }}>{review.date}</span>
+      <span style={{ fontSize: "11px", color: "#9CA3AF" }}>{dateStr}</span>
     </div>
     <p style={{ fontSize: "12px", color: "#9CA3AF", marginBottom: "4px" }}>
-      {review.name}
-    </p>
-    <p style={{ fontSize: "13px", fontWeight: 700, color: "#222", margin: "0 0 6px" }}>
-      {review.title}
+      {review.user?.name || "Anonymous"}
     </p>
     <p style={{ fontSize: "12px", color: "#6B7280", lineHeight: 1.65, margin: 0 }}>
-      {review.body}
+      {review.comment}
     </p>
   </div>
-);
+)};
 
 /* ─── Product Page ───────────────────────────────────────── */
 
@@ -570,8 +519,8 @@ const Product = () => {
       </div>
     );
 
-  const rating = product.rating || 4.2;
-  const reviewCount = product.reviewCount || 30;
+  const rating = product.rating || 0;
+  const reviewCount = product.reviewCount || 0;
   const displayPrice = product.sizes?.length ? product.sizes[selectedVariant]?.price : product.price;
   const displayMrp = product.sizes?.length ? product.sizes[selectedVariant]?.mrp : product.mrp;
   const discount =
@@ -579,14 +528,26 @@ const Product = () => {
       ? Math.round(((displayMrp - displayPrice) / displayMrp) * 100)
       : 0;
 
-  /* Fake rating breakdown */
+  /* Calculate dynamic rating breakdown */
+  const reviews = product.reviews || [];
   const ratingBreakdown = [
-    { label: "5 star", pct: 70 },
-    { label: "4 star", pct: 30 },
+    { label: "5 star", pct: 0 },
+    { label: "4 star", pct: 0 },
     { label: "3 star", pct: 0 },
     { label: "2 star", pct: 0 },
     { label: "1 star", pct: 0 },
   ];
+
+  if (reviews.length > 0) {
+    const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    reviews.forEach((r) => {
+      if (r.rating >= 1 && r.rating <= 5) counts[r.rating]++;
+    });
+    ratingBreakdown.forEach((r, idx) => {
+      const star = 5 - idx;
+      r.pct = Math.round((counts[star] / reviews.length) * 100);
+    });
+  }
 
   return (
     <div
@@ -982,7 +943,7 @@ const Product = () => {
                 </span>
               </div>
               <p style={{ fontSize: "12px", color: "#9CA3AF", marginBottom: "16px" }}>
-                Based on {reviewCount}k reviews
+                Based on {reviewCount} reviews
               </p>
 
               {/* Bars */}
@@ -1032,9 +993,13 @@ const Product = () => {
 
               {/* Review cards */}
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {MOCK_REVIEWS.map((review) => (
-                  <ReviewCard key={review.id} review={review} />
-                ))}
+                {reviews.length > 0 ? (
+                  reviews.map((review) => (
+                    <ReviewCard key={review._id} review={review} />
+                  ))
+                ) : (
+                  <p style={{ fontSize: "13px", color: "#888" }}>No reviews yet.</p>
+                )}
               </div>
             </div>
           </div>

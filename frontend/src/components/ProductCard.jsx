@@ -41,7 +41,7 @@ const ProductCard = ({ product, placeholder = false }) => {
 
   // ── Real product tile ──
   const isWished = wishlistIds.includes(product._id);
-  const rating = product.rating || 4;
+  const rating = product.rating || 0;
   const displayPrice = selectedVariant ? selectedVariant.price : product?.price;
   const displayMrp = selectedVariant ? selectedVariant.mrp : product?.mrp;
   const discount = displayMrp > displayPrice
@@ -356,7 +356,7 @@ export const SubscriptionProductCard = ({ product, cartItem, onAdd, onIncrease, 
   const wishlistIds = useSelector((s) => s.wishlist.productIds);
   const isWished = wishlistIds.includes(product._id);
 
-  const rating = product.rating || 4;
+  const rating = product.rating || 0;
   const reviewCount = product.reviewCount || 0;
   const discount =
     product.mrp > product.price

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { SlidersHorizontal, Search, ChevronDown, X } from "lucide-react";
 import { fetchProducts } from "../services/apiClient";
@@ -18,13 +18,19 @@ const SkeletonCard = () => (
 
 /* ─── Price Range Slider ─────────────────────────────────── */
 const PriceSlider = ({ min, max, value, onChange }) => {
-
+  const trackRef = useRef(null);
   const pct = (v) => ((v - min) / (max - min)) * 100;
 
+  const getNewValue = (clientX) => {
+    if (!trackRef.current) return null;
+    const rect = trackRef.current.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    return Math.round(min + ratio * (max - min));
+  };
+
   const handleTrackClick = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const ratio = (e.clientX - rect.left) / rect.width;
-    const newVal = Math.round(min + ratio * (max - min));
+    const newVal = getNewValue(e.clientX);
+    if (newVal === null) return;
     const distLow = Math.abs(newVal - value[0]);
     const distHigh = Math.abs(newVal - value[1]);
     if (distLow <= distHigh) {
@@ -34,31 +40,62 @@ const PriceSlider = ({ min, max, value, onChange }) => {
     }
   };
 
+  const handleThumbDown = (index) => (e) => {
+    e.preventDefault();
+    const handleMove = (moveEvent) => {
+      const clientX = moveEvent.touches ? moveEvent.touches[0].clientX : moveEvent.clientX;
+      const newVal = getNewValue(clientX);
+      if (newVal === null) return;
+
+      if (index === 0) {
+        onChange([Math.min(newVal, value[1] - 1), value[1]]);
+      } else {
+        onChange([value[0], Math.max(newVal, value[0] + 1)]);
+      }
+    };
+
+    const handleUp = () => {
+      document.removeEventListener("mousemove", handleMove);
+      document.removeEventListener("mouseup", handleUp);
+      document.removeEventListener("touchmove", handleMove);
+      document.removeEventListener("touchend", handleUp);
+    };
+
+    document.addEventListener("mousemove", handleMove);
+    document.addEventListener("mouseup", handleUp);
+    document.addEventListener("touchmove", handleMove, { passive: false });
+    document.addEventListener("touchend", handleUp);
+  };
+
   return (
     <div className="mt-3">
       <div
+        ref={trackRef}
         className="relative h-1.5 rounded-full cursor-pointer"
         style={{ backgroundColor: "#D4E6C8" }}
         onClick={handleTrackClick}
       >
-        {/* active track */}
         <div
-          className="absolute h-full rounded-full"
+          className="absolute h-full rounded-full pointer-events-none"
           style={{
             left: `${pct(value[0])}%`,
             width: `${pct(value[1]) - pct(value[0])}%`,
             backgroundColor: "#1B5E20",
           }}
         />
-        {/* low thumb */}
         <div
           className="absolute w-4 h-4 rounded-full shadow -translate-y-1/2 top-1/2 cursor-grab active:cursor-grabbing"
           style={{ left: `${pct(value[0])}%`, backgroundColor: "#1B5E20", transform: "translate(-50%, -50%)" }}
+          onMouseDown={handleThumbDown(0)}
+          onTouchStart={handleThumbDown(0)}
+          onClick={(e) => e.stopPropagation()}
         />
-        {/* high thumb */}
         <div
           className="absolute w-4 h-4 rounded-full shadow -translate-y-1/2 top-1/2 cursor-grab active:cursor-grabbing"
           style={{ left: `${pct(value[1])}%`, backgroundColor: "#1B5E20", transform: "translate(-50%, -50%)" }}
+          onMouseDown={handleThumbDown(1)}
+          onTouchStart={handleThumbDown(1)}
+          onClick={(e) => e.stopPropagation()}
         />
       </div>
       <div className="flex justify-between mt-2 text-xs" style={{ color: "#555" }}>
