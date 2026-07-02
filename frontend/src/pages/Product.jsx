@@ -572,9 +572,11 @@ const Product = () => {
 
   const rating = product.rating || 4.2;
   const reviewCount = product.reviewCount || 30;
+  const displayPrice = product.sizes?.length ? product.sizes[selectedVariant]?.price : product.price;
+  const displayMrp = product.sizes?.length ? product.sizes[selectedVariant]?.mrp : product.mrp;
   const discount =
     displayMrp > displayPrice
-      ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
+      ? Math.round(((displayMrp - displayPrice) / displayMrp) * 100)
       : 0;
 
   /* Fake rating breakdown */

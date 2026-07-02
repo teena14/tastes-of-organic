@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 import { Search, Heart, Star, Plus, Minus } from "lucide-react";
 import { fetchProducts } from "../services/apiClient";
 import { createSubscription, verifySubscriptionPayment } from "../services/apiClient";
@@ -475,7 +476,7 @@ const Subscription = () => {
 
           {!isAuthenticated && (
             <p style={{ fontSize: "11px", color: "#888", textAlign: "center", marginTop: "8px", marginBottom: 0 }}>
-              Please <a href="/login" style={{ color: "#1B5E20", fontWeight: 600 }}>login</a> to subscribe
+              Please <Link to="/login" style={{ color: "#1B5E20", fontWeight: 600 }}>login</Link> to subscribe
             </p>
           )}
         </div>
