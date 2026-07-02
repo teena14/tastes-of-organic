@@ -14,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Image,
+  X,
 } from "lucide-react";
 import api from "../services/api";
 import { addToCart, getCart } from "../services/apiClient";
@@ -396,6 +397,8 @@ const Product = () => {
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(0);
+  const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
+  const [photoModalIndex, setPhotoModalIndex] = useState(0);
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((s) => s.auth);
   const wishlistIds = useSelector((s) => s.wishlist.productIds);
@@ -962,33 +965,48 @@ const Product = () => {
                   <h3 style={{ margin: 0, fontSize: "15px", fontWeight: 700, color: "#1a1a1a" }}>
                     Review images
                   </h3>
-                  <button style={{ fontSize: "12px", color: "#1B5E20", background: "none", border: "none", cursor: "pointer", fontFamily: "Poppins, sans-serif", fontWeight: 600 }}>
-                    See photos →
-                  </button>
-                </div>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  {REVIEW_IMAGE_COLORS.map((c, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        width: "72px",
-                        height: "72px",
-                        borderRadius: "10px",
-                        backgroundColor: c,
-                        flexShrink: 0,
-                        overflow: "hidden",
+                  {product.images?.length > 0 && (
+                    <button
+                      onClick={() => {
+                        setPhotoModalIndex(0);
+                        setIsPhotoModalOpen(true);
                       }}
+                      style={{ fontSize: "12px", color: "#1B5E20", background: "none", border: "none", cursor: "pointer", fontFamily: "Poppins, sans-serif", fontWeight: 600 }}
                     >
-                      {product.images?.[i] ? (
+                      See photos →
+                    </button>
+                  )}
+                </div>
+                {product.images?.length > 0 ? (
+                  <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px" }}>
+                    {product.images.map((src, i) => (
+                      <div
+                        key={i}
+                        onClick={() => {
+                          setPhotoModalIndex(i);
+                          setIsPhotoModalOpen(true);
+                        }}
+                        style={{
+                          width: "72px",
+                          height: "72px",
+                          borderRadius: "10px",
+                          backgroundColor: "#f5f5f5",
+                          flexShrink: 0,
+                          overflow: "hidden",
+                          cursor: "pointer"
+                        }}
+                      >
                         <img
-                          src={product.images[i]}
+                          src={src}
                           alt=""
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p style={{ fontSize: "13px", color: "#888", margin: 0 }}>No photos added in review</p>
+                )}
               </div>
 
               {/* Review cards */}
@@ -1030,6 +1048,44 @@ const Product = () => {
         </div>
       </div>
 
+
+    {/* ── Photo Modal ── */}
+      {isPhotoModalOpen && (
+        <div
+          style={{
+            position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.9)", zIndex: 9999,
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center",
+          }}
+        >
+          <button
+            onClick={() => setIsPhotoModalOpen(false)}
+            style={{ position: "absolute", top: "20px", right: "20px", background: "none", border: "none", color: "#fff", cursor: "pointer" }}
+          >
+            <X size={32} />
+          </button>
+          {product.images?.[photoModalIndex] && (
+            <img src={product.images[photoModalIndex]} alt="Review" style={{ maxHeight: "80vh", maxWidth: "90vw", objectFit: "contain" }} />
+          )}
+          <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
+            <button
+              disabled={photoModalIndex === 0}
+              onClick={() => setPhotoModalIndex((prev) => prev - 1)}
+              style={{ background: "none", border: "none", color: photoModalIndex === 0 ? "#555" : "#fff", cursor: photoModalIndex === 0 ? "not-allowed" : "pointer" }}
+            >
+              <ChevronLeft size={32} />
+            </button>
+            <button
+              disabled={photoModalIndex === (product.images?.length || 1) - 1}
+              onClick={() => setPhotoModalIndex((prev) => prev + 1)}
+              style={{ background: "none", border: "none", color: photoModalIndex === (product.images?.length || 1) - 1 ? "#555" : "#fff", cursor: photoModalIndex === (product.images?.length || 1) - 1 ? "not-allowed" : "pointer" }}
+            >
+              <ChevronRight size={32} />
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

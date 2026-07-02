@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { Heart, Star, ShoppingCart } from "lucide-react";
+import { Heart, Star, ShoppingCart, ChevronDown } from "lucide-react";
 import { addToCart, getCart } from "../services/apiClient";
 import { addToWishlist, removeFromWishlist } from "../services/apiClient";
 import { setCart } from "../slices/cartSlice";
@@ -313,7 +313,7 @@ const ProductCard = ({ product, placeholder = false }) => {
 
         {/* Size selector dropdown (if variants exist) */}
         {product.sizes?.length > 0 && (
-          <div className="mt-2">
+          <div className="mt-2 relative">
             <select
               value={selectedVariant?.size || ""}
               onChange={(e) => {
@@ -321,13 +321,26 @@ const ProductCard = ({ product, placeholder = false }) => {
                 if (variant) setSelectedVariant(variant);
               }}
               onClick={(e) => e.preventDefault()}
-              className="w-full text-xs py-1.5 px-2 rounded border outline-none cursor-pointer"
-              style={{ borderColor: "#D4E6C8", color: "#555", backgroundColor: "#F9FBF7" }}
+              className="appearance-none w-full text-[11px] py-1.5 pl-2.5 pr-7 rounded-md border outline-none cursor-pointer transition-colors"
+              style={{
+                borderColor: "#D4E6C8",
+                color: "#222",
+                backgroundColor: "#fff",
+                fontFamily: "Poppins, sans-serif",
+                fontWeight: 500,
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#1B5E20"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#D4E6C8"; }}
             >
               {product.sizes.map((sz) => (
                 <option key={sz.size} value={sz.size}>{sz.size}</option>
               ))}
             </select>
+            <ChevronDown
+              size={12}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors"
+              style={{ color: "#777" }}
+            />
           </div>
         )}
 
