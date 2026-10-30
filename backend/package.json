@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test",
     "start": "node server.js",
     "seed:products": "node seed/seedProducts.js"
   },
@@ -14,7 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.13.4",
-    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
@@ -25,7 +24,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.5",
     "nodemailer": "^8.0.4",
-    "razorpay": "^2.9.6"
+    "zod": "^4.6.5"
   },
   "type": "module",
   "devDependencies": {

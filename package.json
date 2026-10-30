@@ -1,17 +1,14 @@
 {
-  "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "express-session": "^1.19.0",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.1.5",
-    "nodemailer": "^8.0.4",
-    "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0",
-    "razorpay": "^2.9.6"
-  },
-  "devDependencies": {
-    "autoprefixer": "^10.4.27",
-    "postcss": "^8.5.8",
-    "tailwindcss": "^4.2.1"
+  "name": "tastes-of-organic",
+  "private": true,
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "test": "npm --prefix backend test",
+    "lint": "npm --prefix frontend run lint",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
   }
 }

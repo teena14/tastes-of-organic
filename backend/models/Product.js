@@ -92,4 +92,17 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Canonicalize category: normalize JUICE to JUICES
+productSchema.pre("validate", function (next) {
+  if (this.category === "JUICE") {
+    this.category = "JUICES";
+  }
+  next();
+});
+
+productSchema.index({ category: 1 });
+productSchema.index({ isFeatured: 1 });
+productSchema.index({ createdAt: -1 });
+productSchema.index({ name: "text", description: "text" });
+
 export default mongoose.model("Product", productSchema);

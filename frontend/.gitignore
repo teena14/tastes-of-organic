@@ -26,3 +26,4 @@ tempCodeRunnerFile.*
 
 .env
 .env.*
+!.env.example

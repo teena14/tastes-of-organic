@@ -53,18 +53,15 @@ const ConcernGrid = () => (
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
     const loadProducts = async () => {
       try {
         setLoading(true);
-        setFetchError(false);
         const result = await fetchProducts({});
         setProducts(result.data || []);
       } catch {
         setProducts([]);
-        setFetchError(true);
       } finally {
         setLoading(false);
       }

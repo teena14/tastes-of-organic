@@ -52,7 +52,7 @@ const orderSchema = new mongoose.Schema(
 
     orderStatus: {
       type: String,
-      enum: ["placed", "processing", "shipped", "delivered"],
+      enum: ["placed", "processing", "shipped", "delivered", "cancelled"],
       default: "placed"
     },
 
@@ -66,6 +66,9 @@ const orderSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+orderSchema.index({ user: 1, createdAt: -1 });
+orderSchema.index({ phonePeTransactionId: 1 }, { sparse: true });
 
 const Order = mongoose.model("Order", orderSchema);
 export default Order;

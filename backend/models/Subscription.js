@@ -56,4 +56,7 @@ const subscriptionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+subscriptionSchema.index({ user: 1, createdAt: -1 });
+subscriptionSchema.index({ phonePeTransactionId: 1 }, { sparse: true });
+
 export default mongoose.model("Subscription", subscriptionSchema);
