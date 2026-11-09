@@ -6,7 +6,9 @@ import AppError from "../utils/AppError.js";
 const MAX_PAGE_LIMIT = 100;
 
 export const getProducts = asyncHandler(async (req, res) => {
-  const { search, category, concern, sort, featured } = req.query;
+  const validatedQuery = req.validatedQuery ?? req.query;
+
+  const { search, category, concern, sort, featured } = validatedQuery;
 
   const query = {};
 
@@ -42,10 +44,11 @@ export const getProducts = asyncHandler(async (req, res) => {
   if (sort === "rating") sortOption = { rating: -1 };
   if (sort === "newest") sortOption = { createdAt: -1 };
 
-  const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+  const page = Math.max(1, parseInt(validatedQuery.page, 10) || 1);
+
   const limit = Math.min(
     MAX_PAGE_LIMIT,
-    Math.max(1, parseInt(req.query.limit, 10) || 20)
+    Math.max(1, parseInt(validatedQuery.limit, 10) || 20)
   );
   const skip = (page - 1) * limit;
 

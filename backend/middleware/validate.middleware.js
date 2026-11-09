@@ -39,7 +39,7 @@ export const validate = ({ body, query, params }) => {
           }))
         );
       } else {
-        req.query = result.data;
+        req.validatedQuery = result.data;
       }
     }
 
